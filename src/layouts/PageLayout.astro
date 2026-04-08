@@ -1,0 +1,51 @@
+---
+// src/layouts/PageLayout.astro
+import BaseLayout from './BaseLayout.astro';
+import Navbar from '@components/layout/Navbar.astro';
+import Footer from '@components/layout/Footer.astro';
+import Analytics from '@components/ui/Analytics.astro';
+import SEOHead from '@components/seo/SEOHead.astro';
+import type { Lang } from '@i18n/index';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang: Lang;
+  pathname?: string;
+  ogImage?: string;
+  ogType?: string;
+  seoKeywords?: string[];
+}
+
+const {
+  title,
+  description,
+  lang,
+  pathname = '',
+  ogImage,
+  ogType = 'website',
+  seoKeywords = []
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description} lang={lang} pathname={pathname} ogImage={ogImage}>
+  <SEOHead
+    slot="seo"
+    title={title}
+    description={description}
+    lang={lang}
+    pathname={pathname}
+    ogImage={ogImage}
+    ogType={ogType}
+    seoKeywords={seoKeywords}
+  />
+
+  <Navbar slot="navbar" lang={lang} />
+
+  <!-- Page Content -->
+  <slot />
+
+  <Footer slot="footer" lang={lang} />
+
+  <Analytics slot="analytics" lang={lang} />
+</BaseLayout>
