@@ -1,0 +1,65 @@
+---
+// src/components/ui/Analytics.astro
+import type { Lang } from '@i18n/index';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+// Map language codes to Silktide script files
+const silktideScript = `/consent/silktide_${lang}.js`;
+const gaId = import.meta.env.PUBLIC_GA_ID;
+---
+
+<!-- Silktide Consent Manager (unconditional, handles multi-language) -->
+<script is:inline src={silktideScript}></script>
+
+<!-- Google Analytics 4 (deferred, fires only after Silktide consent) -->
+{gaId && (
+  <script is:inline define:vars={{ gaId }}>
+    // Wait for Silktide consent event
+    window.addEventListener('silktide-consent-change', function(event) {
+      const consent = event.detail || window.silktideConsent;
+
+      // Only initialize GA4 if analytics consent is granted
+      if (consent && consent.analytics === true) {
+        // Prevent duplicate initialization
+        if (window.gtag) return;
+
+        // Google Analytics 4 script
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+        document.head.appendChild(script);
+
+        // Initialize gtag
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function() {
+          window.dataLayer.push(arguments);
+        };
+        window.gtag('js', new Date());
+        window.gtag('config', gaId, {
+          allow_google_signals: consent.marketing === true,
+          allow_ad_personalization: consent.marketing === true,
+        });
+
+        // Track page view
+        window.gtag('event', 'page_view');
+      }
+    });
+
+    // Try to get existing consent if user already accepted
+    if (window.silktideConsent && window.silktideConsent.analytics === true) {
+      window.dispatchEvent(new CustomEvent('silktide-consent-change', {
+        detail: window.silktideConsent,
+      }));
+    }
+  </script>
+)}
+
+<!-- Fallback: Silktide banner should display even if JS is disabled -->
+<noscript>
+  <p>This site uses cookies for analytics and GDPR compliance. Please enable JavaScript to see the consent manager.</p>
+</noscript>
