@@ -1,15 +1,27 @@
 - Ide o web s prezentáciou nových produktov, ktoré by firma HPM chcela predávať pod značkou "É-space" a osloviť potenciálnych zákazníkov a investorov svojou kvalitou, ekologickými materiálmi a nízkou cenou v porovnaní s konkurenciou.
 - Base layout stránky bude jednoduchý:
-  - top toolbar obsahuje len logo firmy (link: /), Produkty (link: /), Pre Investorov (link: /pre-investorov/)
+  - top toolbar obsahuje logo firmy (link: /), Produkty (link: /), Pre Investorov (link: /pre-investorov/)
+  - na desktop: classické linky v toolbare
+  - na mobile: hamburger menu
   - footer obsahuje kontaktné info "HPM company Slovakia – [email / telefón / web]"
-- Stránka bude vo viacerých jazykových verziách pre rôzne cieľové krajiny a trhy, každý jazyk bude v podadresári, napr. /en/ pre angličtinu. Hlavná stránka / zobrazí zoznam krajín alebo jazykov, ktoré užívateľa presmerujú na podstránku s daným jazykom.
+- Stránka bude vo viacerých jazykových verziách pre rôzne cieľové krajiny a trhy:
+  - Jazykové verzie: /en/, /sk/, /cs/
+  - Hlavná stránka / zobrazí prehľadný zoznam krajín (ikona vlajky + názov jazyka), ktorý užívateľa presmeruje na podstránku s daným jazykom
+  - Všetky podstránky (/produkty, /pre-investorov) budú dostupné vo všetkých jazykoch
 - Tech stack:
-  - Astro.js, môžeš použiť aj AstroWind tému alebo len vlastnú s použitím Tailwind pre jednoduchosť. Optimalizované veľkosti obrázkov by sa mali automaticky generovať v build procese pre rôzne veľkosti displejov a vkladať sa do srcset. Adresárová štruktúra by mala byť čo najjednoduchšia 
-  - nejaká lightbox knižnica na zobrazovanie obrázkov a galérii
-  - Silktide consent manager (https://silktide.com/consent-manager)
-  - Google Tag Manager
-  - Stránka bude zbuildovaná ako statická a deploynutá na GitHub Pages. Pri každom novom git pushi bude automaticky prebuildovaná a deploynutá.
+  - Astro.js, vlastný layout s Tailwind CSS pre jednoduchosť a kontrolu. Optimalizované veľkosti obrázkov by sa mali automaticky generovať v build procese pre rôzne veľkosti displejov a vkladať sa do srcset. Adresárová štruktúra by mala byť čo najjednoduchšia 
+  - lightbox knižnica na zobrazovanie obrázkov a galérii (napr. GLightbox alebo PhotoSwipe)
+  - Komponentu pre interaktívne body na obrázku: body sa zobrazujú na percentuálnych súradniciach (responsive), hover efekt, popup s popisom/cenou a linkom
+  - Google Analytics 4 (GA4) - sledovanie návštevníkov, zdroj ruchu, konverzií
+  - Silktide consent manager (https://silktide.com/consent-manager) - GDPR compliance, cookie banner
+  - Stránka bude zbuildovaná ako statická a deploynutá na GitHub Pages. Pri každom novom git pushi bude automaticky prebuildovaná a deploynutá (GitHub Actions).
+  - Open Graph tagy pre sociálne siete (preview pri zdieľaní)
 - Stránka musí byť responzívna (pre desktopy, tablety aj mobily).
+- SEO optimalizácia:
+  - sitemap.xml pre všetky jazykové verzie
+  - robots.txt
+  - Meta tagy (description, keywords), Open Graph tagy pre sociálne siete
+  - Štruktúrovaný obsah (schema.org markup ak je potrebný)
 - Štýl stránky by mal byť jednoduchý a čistý podobný ako tu: https://www.ikea.com/jo/en/ikea-business/gallery/an-inspiring-garden-studio-for-your-small-business-pubc56a2400/
   - Budeme potrebovať aj komponentu, ktorá zobrazí obrázok a na ňom na percentami zadaných súradniciach budú zobrazené hover body, ktoré keď nad ne prejdem kurzorom, sa vysvietia, a keď na ne kliknem, obrázok sa do toho bodu trochu prizoomuje a zobrazí sa vedľa bodu (ale stále v rámci obrázku) malý popup, v ktorom môže byť:
     - názov a cena (napr. "Stôl TROTTEN, 150€"), a keď na ne kliknem, otvorí sa v novom okne ikea stránka s daným produktom
@@ -17,7 +29,18 @@
 - Obrázky:
   - ./src/assets/img/logo.jpg - logo firmy
   - ./src/assets/img/hero.jpg - hero obrázok
-- Kontakt: ideálny by bol nejaký kontaktný formulár buď s odoslaním na emailovú adresu alebo na whatsapp.
+  - Obrázky s interaktívnymi bodami (3-10 bodov per obrázok): budú dorobiť neskôr
+    - Testovanie komponenty: použijeme ./src/assets/img/1_podorys.jpg ako mock obrázok
+    - Body budú mať percentuálne súradnice (x%, y%) pre responsive správanie
+    - Popup s popisom/cenou a linkom sa zobrazí vedľa bodu (ale v rámci obrázku)
+- Kontakt: Hybrid pristup
+  - Kontaktný formulár s poliami:
+    - Email (povinný)
+    - Meno (povinný)
+    - Ktorý produkt vás zaujíma? (dropdown: HPM Office Solo / Studio Duo / Nature Meeting Cube, povinný)
+    - Poznámka (nepovinná)
+  - Odoslanie: na emailovú adresu (Formspree.io alebo Email.js na frontend)
+  - Nižšie v sekcii: odkaz "Alebo napíš mi na WhatsApp" s priamym linkom na WhatsApp Business číslo (https://wa.me/+421XXXXXXXXX?text=...)
 - Budú tam nasledujúce podstránky:
 
 (link: /)
