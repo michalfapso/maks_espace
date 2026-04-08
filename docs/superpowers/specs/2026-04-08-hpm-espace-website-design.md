@@ -35,7 +35,7 @@ Three product lines in the "Hay Office" and "Nature" series:
 
 ## 3. Site Structure & Pages
 
-### 3.1 Routes (7 total, with translated URLs)
+### 3.1 Routes (7 total)
 
 | Route | Purpose | Languages |
 |-------|---------|-----------|
@@ -62,7 +62,7 @@ Three product lines in the "Hay Office" and "Nature" series:
 3. **Each product section includes:**
    - Product name and price range
    - Description (max 3 bullet points)
-   - Product gallery (single image or gallery with thumbnails; see section 5.6)
+   - Product gallery (single image or gallery with thumbnails; see section 5.2)
    - May include interactive hotspots on images
 4. **Interior Inspiration section** — showcase gallery of interior setups (IKEA furniture combinations, styling ideas)
 5. **Materials section** — brief note on eco-friendly materials (placeholder text initially)
@@ -73,9 +73,16 @@ Three product lines in the "Hay Office" and "Nature" series:
 - Galleries open in a lightbox (GLightbox) with arrow navigation
 - Hotspots (if present on an image) remain interactive **within the lightbox view**
 
-### 3.4 Investor Page (`/[lang]/pre-investorov/`, `/en/for-investors/`, `/cs/pro-investory/`)
+### 3.4 Investor Page
 
-**All 7 pitch-deck sections:**
+Three separate static files, one per language, each with a different URL slug:
+- `/sk/pre-investorov/` → `src/pages/sk/pre-investorov.astro`
+- `/en/for-investors/` → `src/pages/en/for-investors.astro`
+- `/cs/pro-investory/` → `src/pages/cs/pro-investory.astro`
+
+Each file imports from the same shared component/layout and passes the appropriate `lang` prop. The `hreflang` alternates in SEOHead explicitly list all three translated URLs so search engines understand they are equivalent pages.
+
+**All 8 pitch-deck sections:**
 1. Vision (Paragraph + quote)
 2. Problem (3–4 bullet points)
 3. Solution (Overview + key specs)
@@ -146,27 +153,42 @@ Three product lines in the "Hay Office" and "Nature" series:
 
 ### 5.2 Gallery Component (with Thumbnail Strip)
 
-**Purpose:** Display product and inspiration images with optional thumbnail navigation.
+**Purpose:** Display product and inspiration images with optional thumbnail navigation. Auto-discovers all images in a given folder and wraps `HotspotImage` for any image that has an accompanying `.json` file.
 
-**Behavior:**
+**Props:**
+- `folder` — path to gallery folder (e.g., `src/assets/galleries/1/`)
 
-**Single image:**
-- Image displays normally at full width
-- Clicking the image opens it in lightbox (GLightbox)
-- Hotspots (if present) are interactive on the main image and in lightbox
+**Image discovery (build-time):**
+- At build time, reads all image files in `folder`, sorted alphabetically by filename
+- For each image `IMG.jpg`, checks for a sibling `IMG.json`
+  - If `IMG.json` exists → renders that image as a `HotspotImage` with hotspots defined in the JSON
+  - If no JSON → renders as a plain `<Image>`
+- JSON hotspot format:
+  ```json
+  [
+    { "id": "desk", "x": 42.5, "y": 30.0, "label": "Stôl IDÅSEN, 199€", "href": "https://..." },
+    { "id": "wall", "x": 15.0, "y": 60.0, "label": "Konopno-slamenný panel" }
+  ]
+  ```
+  - `href` is optional; if present, the popup renders as a linked product card; otherwise as a text description
 
-**Multiple images:**
-- First image displays at full width
-- Below the main image: horizontal scrollable stripe with thumbnails of all images in the gallery
-- Thumbnail styling: 80–100px height, rounded corners, gap between thumbs
-- Clicking a thumbnail swaps it with the main image
-- Clicking the main image opens entire gallery in lightbox (GLightbox)
-- Hotspots (if present) remain interactive on main image and in lightbox
+**Single image (folder contains 1 image):**
+- Image (or HotspotImage) displays at full width
+- Clicking the image opens it in GLightbox
+
+**Multiple images (folder contains 2+ images):**
+- First image displays at full width as the main image
+- Below: horizontal scrollable thumbnail strip showing all images
+  - Thumbnail height: 80–100px, rounded corners, gap between items
+  - Active thumbnail is visually highlighted
+- Clicking a thumbnail swaps it into the main image area (smooth swap, no page reload)
+- Clicking the main image opens the full gallery in GLightbox starting from the current image
+- When a hotspot image is in the main area, its hotspots are interactive; when it's a thumbnail, no hotspots shown
 
 **Lightbox behavior:**
-- GLightbox displays full-size image with left/right arrow navigation
-- User can navigate between all images in the gallery
-- Hotspots remain clickable in lightbox view
+- GLightbox displays full-size images with left/right arrow navigation
+- Hotspots remain interactive in lightbox view
+- User can navigate between all images in the gallery from within the lightbox
 
 ### 5.3 ContactForm Component
 
@@ -180,7 +202,7 @@ Three product lines in the "Hay Office" and "Nature" series:
 - AJAX POST to Formspree endpoint
 - On success: replace form with "Thank you" message + WhatsApp link
 - On error: show error message, allow retry
-- WhatsApp fallback link: `https://wa.me/+421XXXXXXXXX?text=I'm%20interested%20in%20...` (number and text TBD)
+- WhatsApp fallback link dynamically updates as user fills the form: the `href` is re-built on every `input`/`change` event, incorporating the current values (name, selected product). Base URL: `https://wa.me/+421XXXXXXXXX` (number TBD); text template: e.g., "Dobrý deň, volám sa [Name] a mám záujem o [Product]."
 
 **Styling:** Clean, minimal. Matches page design.
 
@@ -189,7 +211,7 @@ Three product lines in the "Hay Office" and "Nature" series:
 **Desktop:** Horizontal navigation bar with logo (left) + menu links (right)
 - Logo links to `/`
 - Menu: "Produkty" / "Products" / "Produkty" (language-specific), "Pre Investorov" / "For Investors" / "Pro Investory" (language-specific)
-- Language selector (3 flags) in top-right corner
+- Language selector (3 flags) in top-right corner — clicking a flag navigates to the **equivalent page** in that language (e.g., on `/en/for-investors/`, clicking 🇸🇰 goes to `/sk/pre-investorov/`)
 
 **Mobile (< 768px):** Hamburger menu
 - Logo + hamburger button in toolbar
@@ -273,12 +295,14 @@ Each page receives `lang` prop and uses `t(lang)` to access translations.
 ### 7.1 Image Files
 
 **Existing:**
-- `src/assets/img/logo.jpg` — company logo
+- `src/assets/img/logo.jpg` — company logo (used in Navbar and homepage)
 - `src/assets/img/hero.jpg` — hero image for products page
-- `src/assets/img/material.jpg` — (converted from material.heic)
-- `src/assets/img/1_podorys.jpg` — Hay Office Solo floor plan (may have hotspots)
-- `src/assets/img/2_podorys.jpg` — Hay Studio Duo floor plan (may have hotspots)
-- `src/assets/img/3_podorys.jpg` — Nature Meeting Cube floor plan (may have hotspots)
+
+**To be moved into gallery folders:**
+- `src/assets/img/1_podorys.jpg` → `src/assets/galleries/1/1_podorys.jpg`
+- `src/assets/img/2_podorys.jpg` → `src/assets/galleries/2/2_podorys.jpg`
+- `src/assets/img/3_podorys.jpg` → `src/assets/galleries/3/3_podorys.jpg`
+- `src/assets/img/material.jpg` → `src/assets/galleries/materials/material.jpg`
 
 **Image optimization:**
 - All images use Astro's `<Image>` or `<Picture>` components
@@ -452,7 +476,7 @@ This will be replaced with final material descriptions once finalized by the pro
 │   │   ├── ui/
 │   │   │   ├── HeroImage.astro
 │   │   │   ├── ProductSection.astro
-│   │   │   ├── LightboxGallery.astro
+│   │   │   ├── Gallery.astro
 │   │   │   ├── HotspotImage.astro
 │   │   │   ├── ContactForm.astro
 │   │   │   ├── LanguageSelector.astro
@@ -469,9 +493,14 @@ This will be replaced with final material descriptions once finalized by the pro
 │   │   └── PageLayout.astro
 │   ├── pages/
 │   │   ├── index.astro              # / — language selector
-│   │   └── [lang]/
-│   │       ├── index.astro          # products page
-│   │       └── pre-investorov.astro # investor page
+│   │   ├── [lang]/
+│   │   │   └── index.astro          # products page (dynamic, 3 langs)
+│   │   ├── sk/
+│   │   │   └── pre-investorov.astro # investor page (Slovak)
+│   │   ├── en/
+│   │   │   └── for-investors.astro  # investor page (English)
+│   │   └── cs/
+│   │       └── pro-investory.astro  # investor page (Czech)
 │   └── styles/
 │       └── global.css               # Tailwind + GLightbox CSS
 ├── astro.config.mjs
@@ -497,3 +526,6 @@ This will be replaced with final material descriptions once finalized by the pro
 - [ ] Lighthouse audit: 90+ on all metrics
 - [ ] Cross-browser tested (Chrome, Firefox, Safari)
 - [ ] SEO: sitemap valid, robots.txt present, hreflang correct
+- [ ] Language switcher navigates to equivalent page in selected language (not homepage)
+- [ ] Gallery auto-discovers images from folder; hotspot JSON files load correctly
+- [ ] WhatsApp link text updates dynamically as contact form is filled
