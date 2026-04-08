@@ -3,10 +3,14 @@ export interface TranslationSet {
   nav: {
     products: string;
     investors: string;
+    selectLanguage?: string;
   };
   footer: {
     company: string;
     contact: string;
+    description?: string;
+    quickLinks?: string;
+    home?: string;
   };
   contact: {
     formLabel: string;

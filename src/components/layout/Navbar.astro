@@ -40,9 +40,7 @@ const investorsUrl = getInvestorPath(lang);
       <div class="hidden md:flex gap-2">
         {Object.entries(LANG_META).map(([langCode, meta]) => (
           <a
-            href={langCode === 'sk' ? getProductsPath(langCode as Lang) :
-                  langCode === 'en' ? getProductsPath(langCode as Lang) :
-                  getProductsPath(langCode as Lang)}
+            href={getProductsPath(langCode as Lang)}
             class={`text-lg ${langCode === lang ? 'text-amber font-bold' : 'hover:text-amber transition-colors'}`}
             title={meta.label}
           >
@@ -87,9 +85,7 @@ const investorsUrl = getInvestorPath(lang);
           <div class="flex gap-3">
             {Object.entries(LANG_META).map(([langCode, meta]) => (
               <a
-                href={langCode === 'sk' ? getProductsPath(langCode as Lang) :
-                      langCode === 'en' ? getProductsPath(langCode as Lang) :
-                      getProductsPath(langCode as Lang)}
+                href={getProductsPath(langCode as Lang)}
                 class={`flex flex-col items-center gap-1 p-2 rounded ${
                   langCode === lang
                     ? 'bg-amber text-wood'
