@@ -20,11 +20,16 @@ Key files to be created/modified:
 - `tsconfig.json`
 - `package.json` (modify for dependencies)
 
-**i18n:**
-- `src/i18n/index.ts`
-- `src/i18n/sk.ts`
-- `src/i18n/en.ts`
-- `src/i18n/cs.ts`
+**i18n (global strings only):**
+- `src/i18n/index.ts` (utilities: t(), getLangURL(), LANG_META, SUPPORTED_LANGS)
+- `src/i18n/sk.ts` (Slovak: nav, footer, form labels)
+- `src/i18n/en.ts` (English: nav, footer, form labels)
+- `src/i18n/cs.ts` (Czech: nav, footer, form labels)
+
+**Consent Manager (multi-language):**
+- `public/consent/silktide_en.js` (English)
+- `public/consent/silktide_sk.js` (Slovak, translated)
+- `public/consent/silktide_cs.js` (Czech, translated)
 
 **Layouts:**
 - `src/layouts/BaseLayout.astro`
@@ -177,10 +182,13 @@ Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>"
 
 # Phase 2: Internationalization (i18n)
 
-### Task 2: Create i18n Index and Utilities
+### Task 2: Create i18n Index and Utilities (Global Strings Only)
 
 **Files:**
 - Create: `src/i18n/index.ts`
+- Create: `src/i18n/types.ts`
+
+**Note:** This simplified i18n system handles only global UI strings (nav, footer, form labels). Page-specific content (products, investor pitch) lives directly in page components.
 
 - [ ] **Step 1: Write `src/i18n/index.ts`**
 
@@ -196,16 +204,14 @@ export const LANG_META = {
   cs: { label: 'Čeština', flag: '🇨🇿', ogLocale: 'cs_CZ' },
 } as const;
 
-// Lazy import translations to reduce bundle size
-import type { TranslationSet } from './types';
+// Import global translation strings
+import sk from './sk';
+import en from './en';
+import cs from './cs';
 
-const translations: Record<Lang, TranslationSet> = {
-  sk: (await import('./sk')).default,
-  en: (await import('./en')).default,
-  cs: (await import('./cs')).default,
-};
+const translations: Record<Lang, typeof sk> = { sk, en, cs };
 
-export function t(lang: Lang): TranslationSet {
+export function t(lang: Lang) {
   return translations[lang] || translations.sk;
 }
 
@@ -229,72 +235,9 @@ export function getLangURL(pathname: string, lang: Lang): string {
   }
   return getProductsPath(lang);
 }
-
-// Type for all translations
-export interface TranslationSet {
-  nav: {
-    products: string;
-    investors: string;
-  };
-  homepage: {
-    title: string;
-    subtitle: string;
-  };
-  products: {
-    pageTitle: string;
-    solo: {
-      name: string;
-      size: string;
-      price: string;
-      desc: string[];
-    };
-    duo: {
-      name: string;
-      size: string;
-      price: string;
-      desc: string[];
-    };
-    cube: {
-      name: string;
-      size: string;
-      price: string;
-      desc: string[];
-    };
-    interior: {
-      title: string;
-      desc: string;
-    };
-    materials: {
-      title: string;
-      text: string;
-    };
-  };
-  contact: {
-    label: string;
-    name: string;
-    email: string;
-    product: string;
-    note: string;
-    submit: string;
-    whatsapp: string;
-    success: string;
-    error: string;
-  };
-  investor: {
-    pageTitle: string;
-    vision: { title: string; text: string };
-    problem: { title: string; points: string[] };
-    solution: { title: string; text: string };
-    roadmap: { title: string; text: string };
-    market: { title: string; text: string };
-    bizmodel: { title: string; text: string };
-    why: { title: string; text: string };
-    ask: { title: string; text: string };
-  };
-}
 ```
 
-- [ ] **Step 2: Create types file for translations**
+- [ ] **Step 2: Create types file for global strings**
 
 ```typescript
 // src/i18n/types.ts
@@ -303,60 +246,21 @@ export interface TranslationSet {
     products: string;
     investors: string;
   };
-  homepage: {
-    title: string;
-    subtitle: string;
-  };
-  products: {
-    pageTitle: string;
-    solo: {
-      name: string;
-      size: string;
-      price: string;
-      desc: string[];
-    };
-    duo: {
-      name: string;
-      size: string;
-      price: string;
-      desc: string[];
-    };
-    cube: {
-      name: string;
-      size: string;
-      price: string;
-      desc: string[];
-    };
-    interior: {
-      title: string;
-      desc: string;
-    };
-    materials: {
-      title: string;
-      text: string;
-    };
+  footer: {
+    company: string;
+    contact: string;
   };
   contact: {
-    label: string;
-    name: string;
-    email: string;
-    product: string;
-    note: string;
-    submit: string;
-    whatsapp: string;
-    success: string;
-    error: string;
-  };
-  investor: {
-    pageTitle: string;
-    vision: { title: string; text: string };
-    problem: { title: string; points: string[] };
-    solution: { title: string; text: string };
-    roadmap: { title: string; text: string };
-    market: { title: string; text: string };
-    bizmodel: { title: string; text: string };
-    why: { title: string; text: string };
-    ask: { title: string; text: string };
+    formLabel: string;
+    nameLabel: string;
+    emailLabel: string;
+    productLabel: string;
+    noteLabel: string;
+    submitBtn: string;
+    whatsappBtn: string;
+    successMsg: string;
+    errorMsg: string;
+    productOptions: [string, string, string, string]; // 4 options: 3 products + Other
   };
 }
 ```
@@ -365,25 +269,26 @@ export interface TranslationSet {
 
 ```bash
 git add src/i18n/index.ts src/i18n/types.ts
-git commit -m "feat: create i18n foundation with language utilities
+git commit -m "feat: create i18n foundation (global strings)
 
 - Define SUPPORTED_LANGS, LANG_META for 3 languages
 - Create t() function for accessing translations
 - Create getLangURL() and getInvestorPath() helpers
-- Define TranslationSet interface for type safety
+- Define TranslationSet interface for nav/footer/form labels only
 - Support language-specific URL slugs
+- Page-specific content will be defined in page components
 
 Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>"
 ```
 
 ---
 
-### Task 3: Create Slovak Translations (Source of Truth)
+### Task 3: Create Slovak Translations (Global Strings, Source of Truth)
 
 **Files:**
 - Create: `src/i18n/sk.ts`
 
-- [ ] **Step 1: Write complete Slovak translations**
+- [ ] **Step 1: Write Slovak global strings**
 
 ```typescript
 // src/i18n/sk.ts
@@ -394,100 +299,21 @@ const sk = {
     products: 'Produkty',
     investors: 'Pre Investorov',
   },
-  homepage: {
-    title: 'É-space Garden Houses',
-    subtitle: 'Prefabrikované záhradné kancelárie z ekologických materiálov',
-  },
-  products: {
-    pageTitle: 'Produktové portfólio HPM É-SPACE',
-    solo: {
-      name: 'Hay Office Solo',
-      size: '6–10 m²',
-      price: '8–12 tis. €',
-      desc: [
-        '1 pracovné miesto, panoramatické okno',
-        'Základná ventilácia a elektrika',
-        'Možnosť inštalácie klimatizácie/mini-splitu',
-      ],
-    },
-    duo: {
-      name: 'Hay Studio Duo',
-      size: '12–16 m²',
-      price: '16–24 tis. €',
-      desc: [
-        '1–2 pracovné miesta + zóna pre pohovku',
-        'Vylepšené akustické riešenie',
-        'Opcia kompaktného sanitárneho uzla',
-      ],
-    },
-    cube: {
-      name: 'Nature Meeting Cube',
-      size: '20–24 m²',
-      price: '24–40 tis. €',
-      desc: [
-        'Väčšie presklenie, dizajnový akcent',
-        'Možnosť využitia ako malá zasadacia miestnosť',
-        'Ideálne pre koučov, psychológov, mikro-coworking',
-      ],
-    },
-    interior: {
-      title: 'Interiérové Inšpirácie',
-      desc: 'Dizajnované s IKEA nábytkom pre maximálny komfort a funkcionalitu.',
-    },
-    materials: {
-      title: 'Použité Materiály',
-      text: 'Konopné panely, slama a ďalšie ekologické materiály — podrobný popis bude doplnený neskôr.',
-    },
+  footer: {
+    company: 'HPM company Slovakia',
+    contact: 'Kontakt',
   },
   contact: {
-    label: 'Kontaktný Formulár',
-    name: 'Meno',
-    email: 'Email',
-    product: 'Ktorý produkt vás zaujíma?',
-    note: 'Poznámka',
-    submit: 'Odoslať',
-    whatsapp: 'Alebo napíš mi na WhatsApp',
-    success: 'Ďakujeme! Čoskoro sa vám ozývame.',
-    error: 'Chyba pri odoslaní. Skúste znova.',
-  },
-  investor: {
-    pageTitle: 'PITCH-DECK pre investorov',
-    vision: {
-      title: 'Vôňa sena a ticho prírody – vaša každodenná kancelária',
-      text: 'Prefabrikované záhradné kancelárie z konope a slamy pre Česko a Slovensko.',
-    },
-    problem: {
-      title: 'Problém',
-      points: [
-        'Segment „garden offices" v EÚ prudko rastie, no väčšina riešení využíva štandardné materiály',
-        'Majitelia domov hľadajú tiché, teplé a rýchlo zmontovateľné kancelárie bez zložitého povolenia',
-        'Na trhu prakticky neexistujú sériové prefab-kancelárie z bio-materiálov',
-      ],
-    },
-    solution: {
-      title: 'Riešenie: HPM É-KIRI OFFICE',
-      text: 'Séria prefabrikovaných modulárnych kancelárií s konope a slamou, opaľovaným dreveným obkladom a hotovými inžinierskymi riešeniami.',
-    },
-    roadmap: {
-      title: 'Produktová Línia',
-      text: 'Hay Office Solo, Hay Studio Duo, Nature Meeting Cube — všetky celoročne využiteľné.',
-    },
-    market: {
-      title: 'Trh a Načasovanie',
-      text: 'Globálny trh „garden rooms" dosiahne 2,7–2,9 mld. USD. Európa tvorí ~48% objemu. Rastúci záujem o biostavby v strednej Európe.',
-    },
-    bizmodel: {
-      title: 'Biznis Model',
-      text: 'B2C: priamy predaj; B2B: developeri, hotely, rezorty, glamping.',
-    },
-    why: {
-      title: 'Prečo My',
-      text: 'Skúsenosti s ekologickými materiálmi, lokálne zastúpenie, existujúca sieť partnerov.',
-    },
-    ask: {
-      title: 'Čo Hľadáme',
-      text: 'Investície na spustenie prototypovej linky, certifikáciu, showroomy v kľúčových lokalitách.',
-    },
+    formLabel: 'Kontaktný Formulár',
+    nameLabel: 'Meno',
+    emailLabel: 'Email',
+    productLabel: 'Ktorý produkt vás zaujíma?',
+    noteLabel: 'Poznámka',
+    submitBtn: 'Odoslať',
+    whatsappBtn: 'Alebo napíš mi na WhatsApp',
+    successMsg: 'Ďakujeme! Čoskoro sa vám ozývame.',
+    errorMsg: 'Chyba pri odoslaní. Skúste znova.',
+    productOptions: ['Hay Office Solo', 'Hay Studio Duo', 'Nature Meeting Cube', 'Iné'],
   },
 } as const satisfies TranslationSet;
 
@@ -498,13 +324,12 @@ export default sk;
 
 ```bash
 git add src/i18n/sk.ts
-git commit -m "i18n: add complete Slovak translations (source of truth)
+git commit -m "i18n: add Slovak translations (global strings, source of truth)
 
-- Homepage and navigation labels
-- All 3 product descriptions and prices
-- Interior inspiration and materials sections
-- Contact form labels
-- All 8 investor pitch-deck sections
+- Navigation labels (Products, For Investors)
+- Footer text (company name, contact)
+- Contact form labels and messages
+- Product dropdown options + 'Other'
 - Marked as source of truth with 'as const'
 
 Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>"
@@ -512,12 +337,12 @@ Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>"
 
 ---
 
-### Task 4: Create English Translations
+### Task 4: Create English Translations (Global Strings)
 
 **Files:**
 - Create: `src/i18n/en.ts`
 
-- [ ] **Step 1: Write English translations**
+- [ ] **Step 1: Write English global strings**
 
 ```typescript
 // src/i18n/en.ts
@@ -528,100 +353,21 @@ const en = {
     products: 'Products',
     investors: 'For Investors',
   },
-  homepage: {
-    title: 'É-space Garden Houses',
-    subtitle: 'Prefabricated garden offices from eco-friendly materials',
-  },
-  products: {
-    pageTitle: 'HPM É-SPACE Product Portfolio',
-    solo: {
-      name: 'Hay Office Solo',
-      size: '6–10 m²',
-      price: '8–12k €',
-      desc: [
-        '1 workspace, panoramic window',
-        'Basic ventilation and electrical',
-        'Option for air conditioning / mini-split',
-      ],
-    },
-    duo: {
-      name: 'Hay Studio Duo',
-      size: '12–16 m²',
-      price: '16–24k €',
-      desc: [
-        '1–2 workspaces + relaxation zone',
-        'Enhanced acoustic solution',
-        'Optional compact bathroom unit',
-      ],
-    },
-    cube: {
-      name: 'Nature Meeting Cube',
-      size: '20–24 m²',
-      price: '24–40k €',
-      desc: [
-        'Larger glazing, design accent',
-        'Can be used as small meeting room',
-        'Ideal for coaches, psychologists, micro-coworking',
-      ],
-    },
-    interior: {
-      title: 'Interior Inspiration',
-      desc: 'Designed with IKEA furniture for maximum comfort and functionality.',
-    },
-    materials: {
-      title: 'Materials Used',
-      text: 'Hemp panels, straw, and other eco-friendly materials — detailed description coming soon.',
-    },
+  footer: {
+    company: 'HPM company Slovakia',
+    contact: 'Contact',
   },
   contact: {
-    label: 'Contact Form',
-    name: 'Name',
-    email: 'Email',
-    product: 'Which product interests you?',
-    note: 'Message',
-    submit: 'Send',
-    whatsapp: 'Or message me on WhatsApp',
-    success: 'Thank you! We'll be in touch soon.',
-    error: 'Error sending message. Please try again.',
-  },
-  investor: {
-    pageTitle: 'PITCH-DECK for investors',
-    vision: {
-      title: 'The scent of hay and nature\'s quiet – your everyday office',
-      text: 'Prefabricated garden offices from hemp and straw for Czech Republic and Slovakia.',
-    },
-    problem: {
-      title: 'Problem',
-      points: [
-        'The „garden offices" segment in the EU is growing rapidly, but most solutions use standard materials',
-        'Homeowners seek quiet, warm, quickly-assembled offices without complex permits',
-        'There are virtually no serial prefab offices from bio-materials on the market',
-      ],
-    },
-    solution: {
-      title: 'Solution: HPM É-KIRI OFFICE',
-      text: 'A series of prefabricated modular offices with hemp and straw, charred wood cladding, and ready-made engineering solutions.',
-    },
-    roadmap: {
-      title: 'Product Line',
-      text: 'Hay Office Solo, Hay Studio Duo, Nature Meeting Cube — all year-round usable.',
-    },
-    market: {
-      title: 'Market & Timing',
-      text: 'Global „garden rooms" market reaches €2.7–2.9B. Europe comprises ~48% of volume. Growing demand for bio-building in Central Europe.',
-    },
-    bizmodel: {
-      title: 'Business Model',
-      text: 'B2C: direct sales; B2B: developers, hotels, resorts, glamping.',
-    },
-    why: {
-      title: 'Why Us',
-      text: 'Experience with eco-materials, local presence, existing partner network.',
-    },
-    ask: {
-      title: 'What We\'re Looking For',
-      text: 'Investment to launch prototype line, system certification, showrooms in key locations.',
-    },
+    formLabel: 'Contact Form',
+    nameLabel: 'Name',
+    emailLabel: 'Email',
+    productLabel: 'Which product interests you?',
+    noteLabel: 'Message',
+    submitBtn: 'Send',
+    whatsappBtn: 'Or message me on WhatsApp',
+    successMsg: 'Thank you! We\'ll be in touch soon.',
+    errorMsg: 'Error sending message. Please try again.',
+    productOptions: ['Hay Office Solo', 'Hay Studio Duo', 'Nature Meeting Cube', 'Other'],
   },
 } as const satisfies TranslationSet;
 
@@ -632,11 +378,10 @@ export default en;
 
 ```bash
 git add src/i18n/en.ts
-git commit -m "i18n: add English translations matching Slovak structure
+git commit -m "i18n: add English translations (global strings)
 
-- All navigation, product, and contact labels translated
-- All 8 investor sections translated
-- Structure and keys match Slovak source of truth
+- Navigation, footer, and contact form labels
+- All keys match Slovak source of truth
 
 Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>"
 ```
@@ -659,100 +404,21 @@ const cs = {
     products: 'Produkty',
     investors: 'Pro Investory',
   },
-  homepage: {
-    title: 'É-space Garden Houses',
-    subtitle: 'Prefabrikované zahradní kanceláře z ekologických materiálů',
-  },
-  products: {
-    pageTitle: 'HPM É-SPACE Portfolio Produktů',
-    solo: {
-      name: 'Hay Office Solo',
-      size: '6–10 m²',
-      price: '8–12 tis. €',
-      desc: [
-        '1 pracovní místo, panoramatické okno',
-        'Základní ventilace a elektrika',
-        'Možnost instalace klimatizace / mini-splitu',
-      ],
-    },
-    duo: {
-      name: 'Hay Studio Duo',
-      size: '12–16 m²',
-      price: '16–24 tis. €',
-      desc: [
-        '1–2 pracovní místa + zóna pro odpočinek',
-        'Vylepšené akustické řešení',
-        'Možnost kompaktní koupelny',
-      ],
-    },
-    cube: {
-      name: 'Nature Meeting Cube',
-      size: '20–24 m²',
-      price: '24–40 tis. €',
-      desc: [
-        'Větší zasklení, designový akcent',
-        'Lze využít jako malou zasedací místnost',
-        'Ideálně pro kouče, psychology, mikro-coworking',
-      ],
-    },
-    interior: {
-      title: 'Inspirace pro Interiér',
-      desc: 'Navrženo s nábytkem IKEA pro maximální pohodlí a funkcionalitu.',
-    },
-    materials: {
-      title: 'Použité Materiály',
-      text: 'Konopné panely, sláma a další ekologické materiály — podrobný popis bude doplněn později.',
-    },
+  footer: {
+    company: 'HPM company Slovakia',
+    contact: 'Kontakt',
   },
   contact: {
-    label: 'Kontaktní Formulář',
-    name: 'Jméno',
-    email: 'Email',
-    product: 'Který produkt vás zajímá?',
-    note: 'Zpráva',
-    submit: 'Odeslat',
-    whatsapp: 'Nebo mi napište na WhatsApp',
-    success: 'Děkujeme! Brzy se vám ozveme.',
-    error: 'Chyba při odesílání. Zkuste prosím znovu.',
-  },
-  investor: {
-    pageTitle: 'PITCH-DECK pro investory',
-    vision: {
-      title: 'Vůně sena a ticho přírody – vaše každodenní kancelář',
-      text: 'Prefabrikované zahradní kanceláře z konopí a slamy pro Českou republiku a Slovensko.',
-    },
-    problem: {
-      title: 'Problém',
-      points: [
-        'Segment „zahradních kanceláří" v EU rychle roste, ale většina řešení používá standardní materiály',
-        'Majitelé domů hledají tiché, teplé a rychle montované kanceláře bez složitých povolení',
-        'Na trhu prakticky neexistují sériové prefabrikované kanceláře z bio-materiálů',
-      ],
-    },
-    solution: {
-      title: 'Řešení: HPM É-KIRI OFFICE',
-      text: 'Série prefabrikovaných modulárních kanceláří s konopím a slamou, vypáleným dřevěným obkladem a hotovými inženýrskými řešeními.',
-    },
-    roadmap: {
-      title: 'Řada Produktů',
-      text: 'Hay Office Solo, Hay Studio Duo, Nature Meeting Cube — všechny celoročně použitelné.',
-    },
-    market: {
-      title: 'Trh a Načasování',
-      text: 'Globální trh „zahradních místností" dosahuje €2,7–2,9 mld. Evropa tvoří ~48% objemu. Rostoucí poptávka po bio-stavbách ve střední Evropě.',
-    },
-    bizmodel: {
-      title: 'Obchodní Model',
-      text: 'B2C: přímý prodej; B2B: vývojáři, hotely, rezorty, glamping.',
-    },
-    why: {
-      title: 'Proč My',
-      text: 'Zkušenosti s ekologickými materiály, místní přítomnost, existující sít partnerů.',
-    },
-    ask: {
-      title: 'Co Hledáme',
-      text: 'Investici na spuštění prototypové linky, certifikaci systému, showroomy v klíčových lokalitách.',
-    },
+    formLabel: 'Kontaktní Formulář',
+    nameLabel: 'Jméno',
+    emailLabel: 'Email',
+    productLabel: 'Který produkt vás zajímá?',
+    noteLabel: 'Zpráva',
+    submitBtn: 'Odeslat',
+    whatsappBtn: 'Nebo mi napište na WhatsApp',
+    successMsg: 'Děkujeme! Brzy se vám ozveme.',
+    errorMsg: 'Chyba při odesílání. Zkuste prosím znovu.',
+    productOptions: ['Hay Office Solo', 'Hay Studio Duo', 'Nature Meeting Cube', 'Jiné'],
   },
 } as const satisfies TranslationSet;
 
@@ -763,11 +429,11 @@ export default cs;
 
 ```bash
 git add src/i18n/cs.ts
-git commit -m "i18n: add Czech translations matching Slovak structure
+git commit -m "i18n: add Czech translations (global strings)
 
-- All navigation, product, and contact labels translated
-- All 8 investor sections translated to Czech
-- Structure and keys match source of truth
+- Navigation, footer, and contact form labels translated to Czech
+- All keys match Slovak and English versions
+- Page-specific content will be in individual page components
 
 Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>"
 ```
@@ -778,7 +444,15 @@ Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>"
 
 ✅ **Completed:**
 - Phase 1: Astro scaffold, dependencies, directory structure
-- Phase 2: i18n foundation with 3 complete languages
+- Phase 2: i18n foundation with global strings (3 languages):
+  - Navigation labels
+  - Footer text
+  - Contact form labels and messages
+  - Product dropdown options
+
+**Important:** Page-specific content (products, investor pitch sections) will be defined directly in their respective page components (`src/pages/[lang]/index.astro`, `src/pages/sk/pre-investorov.astro`, etc.) for simplicity.
+
+**Consent Manager:** Silktide consent form will be downloaded and manually translated to create language-specific versions (`public/consent/silktide_sk.js`, `silktide_en.js`, `silktide_cs.js`). The `Analytics.astro` component will load the appropriate version based on the page language.
 
 **Next:** Proceed to Task 6 to configure core files, then continue with layouts and components in the next session.
 

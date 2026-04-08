@@ -236,41 +236,52 @@ Each file imports from the same shared component/layout and passes the appropria
 
 ### 6.1 Approach
 
-Pure TypeScript translation system—no external i18n library:
+Lightweight TypeScript translation system for **global UI strings only** (navigation, headers, footers, form labels). Page-specific content lives directly in page components for simplicity.
 
 ```
 src/i18n/
-├── sk.ts       # Slovak (source of truth, typed as const)
-├── en.ts       # English (must match Slovak structure)
-├── cs.ts       # Czech (must match Slovak structure)
-└── index.ts    # Helper exports: t(lang), SUPPORTED_LANGS, LANG_META
+├── sk.ts       # Slovak global strings (source of truth)
+├── en.ts       # English global strings
+├── cs.ts       # Czech global strings
+└── index.ts    # Exports: t(lang), SUPPORTED_LANGS, LANG_META, getLangURL()
 ```
 
-**Translation keys structure** (TypeScript object):
+**Global translation keys** (shared across all pages):
 ```ts
 export const sk = {
   nav: {
     products: "Produkty",
     investors: "Pre Investorov",
   },
-  products: {
-    title: "Produktové portfólio HPM É-SPACE",
-    solo: { name: "Hay Office Solo", price: "8–12 tis. €", ... },
-    // ... all product text
+  footer: {
+    company: "HPM company Slovakia",
+    contact: "Kontakt",
   },
-  investor: {
-    title: "PITCH-DECK pre investorov",
-    // ... all investor page text
+  contact: {
+    formLabel: "Kontaktný Formulár",
+    nameLabel: "Meno",
+    emailLabel: "Email",
+    productLabel: "Ktorý produkt vás zaujíma?",
+    noteLabel: "Poznámka",
+    submitBtn: "Odoslať",
+    whatsappBtn: "Alebo napíš mi na WhatsApp",
+    successMsg: "Ďakujeme! Čoskoro sa vám ozývame.",
+    errorMsg: "Chyba pri odoslaní. Skúste znova.",
+    productOptions: ["Hay Office Solo", "Hay Studio Duo", "Nature Meeting Cube", "Other"],
   },
-  // ... all other strings
 } as const;
 ```
 
 **Helper functions in `src/i18n/index.ts`:**
 - `t(lang: Lang): TranslationSet` — returns the full translation object for a language
 - `getLangURL(path: string, lang: Lang): string` — constructs language-specific URLs
+- `getInvestorPath(lang: Lang): string` — returns correct investor page URL per language
 - `SUPPORTED_LANGS: Lang[]` — `['sk', 'en', 'cs']`
 - `LANG_META` — metadata per language (flag emoji, label, OG locale)
+
+**Page-specific content** (in components, not in i18n):
+- Products page content (product names, descriptions, prices) → directly in `src/pages/[lang]/index.astro`
+- Investor pitch deck sections → directly in `src/pages/sk/pre-investorov.astro`, `src/pages/en/for-investors.astro`, `src/pages/cs/pro-investory.astro`
 
 ### 6.2 Page Routes with i18n
 
@@ -336,11 +347,17 @@ Each folder contains:
 
 ## 8. Analytics & Consent
 
-### 8.1 Silktide Consent Manager
+### 8.1 Silktide Consent Manager (Multi-Language)
 
-- Silktide script loads unconditionally on all pages
-- Displays a GDPR-compliant cookie banner on first visit
+- Download Silktide script and translate it for all 3 languages
+- Store in `public/consent/`:
+  - `silktide_en.js` — English (original)
+  - `silktide_sk.js` — Slovak (translated)
+  - `silktide_cs.js` — Czech (translated)
+- Load language-specific script in `Analytics.astro` based on page `lang` prop
+- Silktide displays a GDPR-compliant cookie banner on first visit
 - User can customize consent (analytics, marketing, etc.)
+- Each language version has translated banner text, button labels, and settings options
 
 ### 8.2 Google Analytics 4 (GA4)
 
