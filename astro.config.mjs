@@ -4,7 +4,7 @@ import tailwind from '@astrojs/tailwind';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://espace-gardens.com',
+  site: process.env.PUBLIC_SITE_URL || 'https://espace-gardens.com',
   base: '/',
   output: 'static',
   integrations: [
@@ -16,6 +16,12 @@ export default defineConfig({
   vite: {
     ssr: {
       external: ['glightbox'],
+    },
+  },
+  env: {
+    schema: {
+      PUBLIC_SITE_URL: 'string',
+      PUBLIC_GA_ID: 'string',
     },
   },
 });
