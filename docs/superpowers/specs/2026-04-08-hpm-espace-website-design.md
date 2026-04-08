@@ -21,11 +21,13 @@ The site is deployed as a static site to GitHub Pages with automatic CI/CD via G
 
 Three product lines in the "Hay Office" and "Nature" series:
 
-| Product | Size | Price Range | Target Audience |
+| Product | Size | Price Range* | Target Audience |
 |---------|------|-------------|-----------------|
 | **Hay Office Solo** | 6–10 m² | 8–12k € | Freelancers, small businesses, homeowners |
 | **Hay Studio Duo** | 12–16 m² | 16–24k € | Pairs, creative professionals, consultants |
 | **Nature Meeting Cube** | 20–24 m² | 24–40k € | Premium clients, small offices, micro-coworking |
+
+*Pricing may vary by country/language version. The translation system supports language-specific pricing (e.g., different prices for `/sk/` vs. `/en/` vs. `/cs/`).
 
 **Note:** Product names may evolve; these are the working names for this phase.
 
@@ -47,6 +49,7 @@ Three product lines in the "Hay Office" and "Nature" series:
 - Czech: `/cs/` (label: Čeština, flag: 🇨🇿)
 
 ### 3.2 Homepage (`/`)
+- Header with logo image and title "É-space Garden Houses"
 - Clean flag grid layout: three large clickable cards (one per language)
 - Each card shows country flag icon + language label
 - Clicking navigates to the product page in that language (e.g., click Czech → `/cs/`)
@@ -59,10 +62,11 @@ Three product lines in the "Hay Office" and "Nature" series:
 3. **Each product section includes:**
    - Product name and price range
    - Description (max 3 bullet points)
-   - Product image (may include interactive hotspots)
-   - IKEA interior suggestion (if applicable)
-4. **Materials section** — brief note on eco-friendly materials (placeholder text initially)
-5. **Contact form** — bottom of page
+   - Product gallery (single image or gallery with thumbnails; see section 5.6)
+   - May include interactive hotspots on images
+4. **Interior Inspiration section** — showcase gallery of interior setups (IKEA furniture combinations, styling ideas)
+5. **Materials section** — brief note on eco-friendly materials (placeholder text initially)
+6. **Contact form** — bottom of page
 
 **Galleries within products:**
 - Some product images may have multiple photos (e.g., gallery of 2–4 variants)
@@ -140,12 +144,36 @@ Three product lines in the "Hay Office" and "Nature" series:
 - Hotspots remain fully functional when image is opened in lightbox
 - Lightbox overlays the hotspots, allowing interaction within the enlarged view
 
-### 5.2 ContactForm Component
+### 5.2 Gallery Component (with Thumbnail Strip)
+
+**Purpose:** Display product and inspiration images with optional thumbnail navigation.
+
+**Behavior:**
+
+**Single image:**
+- Image displays normally at full width
+- Clicking the image opens it in lightbox (GLightbox)
+- Hotspots (if present) are interactive on the main image and in lightbox
+
+**Multiple images:**
+- First image displays at full width
+- Below the main image: horizontal scrollable stripe with thumbnails of all images in the gallery
+- Thumbnail styling: 80–100px height, rounded corners, gap between thumbs
+- Clicking a thumbnail swaps it with the main image
+- Clicking the main image opens entire gallery in lightbox (GLightbox)
+- Hotspots (if present) remain interactive on main image and in lightbox
+
+**Lightbox behavior:**
+- GLightbox displays full-size image with left/right arrow navigation
+- User can navigate between all images in the gallery
+- Hotspots remain clickable in lightbox view
+
+### 5.3 ContactForm Component
 
 **Fields:**
 - Email (required)
 - Name (required)
-- Product interest dropdown (required): "Hay Office Solo" / "Hay Studio Duo" / "Nature Meeting Cube"
+- Product interest dropdown (required): "Hay Office Solo" / "Hay Studio Duo" / "Nature Meeting Cube" / "Other" (for undecided customers)
 - Note (optional, max 500 chars)
 
 **Submission:**
@@ -155,16 +183,6 @@ Three product lines in the "Hay Office" and "Nature" series:
 - WhatsApp fallback link: `https://wa.me/+421XXXXXXXXX?text=I'm%20interested%20in%20...` (number and text TBD)
 
 **Styling:** Clean, minimal. Matches page design.
-
-### 5.3 LightboxGallery Component
-
-**Purpose:** Wrap GLightbox around image galleries.
-
-**Behavior:**
-- Multiple images in a subsection open as a grouped lightbox
-- Arrow keys and clicking arrows navigate between images
-- Each image in gallery has its own caption
-- Hotspots (if present) remain interactive in lightbox view
 
 ### 5.4 Navbar & MobileMenu
 
@@ -267,11 +285,28 @@ Each page receives `lang` prop and uses `t(lang)` to access translations.
 - Sharp auto-generates responsive srcsets (WebP + fallback)
 - Sizes optimized for desktop (1280px), tablet (768px), mobile (375px) viewports
 
-### 7.2 Hotspot Images
+### 7.2 Gallery Folder Structure
+
+```
+src/assets/galleries/
+├── 1/                    # Hay Office Solo images
+├── 2/                    # Hay Studio Duo images
+├── 3/                    # Nature Meeting Cube images
+├── interior/             # Interior inspiration / IKEA setups
+└── materials/            # Materials showcase images
+```
+
+Each folder contains:
+- Primary image(s) for that gallery
+- Optional additional images for gallery thumbnail strip
+- Images can include hotspots (responsive, percentage-based coordinates)
+
+### 7.3 Hotspot Images
 
 - Not all images will have hotspots
 - Hotspots use percentage-based coordinates (responsive)
-- If a hotspot image is added to a gallery (lightbox), hotspots remain interactive
+- Hotspots remain interactive in gallery view and in lightbox
+- When clicking a hotspot in multi-image gallery, popup appears with hotspot info
 
 ---
 
@@ -360,7 +395,9 @@ npm run preview     # Preview production build
 - Sets `SITE_URL` and `PUBLIC_GA_ID` environment variables
 - Deploys to GitHub Pages (Actions source in repo settings)
 
-**Base URL:** If deploying to `orgname.github.io/repo-name/`, set `base: '/repo-name/'` in `astro.config.mjs` and use `import.meta.env.BASE_URL` in internal links.
+**Custom Domain:** The site uses a custom domain (not the default `orgname.github.io`). Configure custom domain in GitHub Pages settings and add `CNAME` file to `public/` directory.
+
+**Base URL:** Since using a custom domain (not a subdirectory), `base: '/'` in `astro.config.mjs`.
 
 ### 12.3 Performance Targets
 
