@@ -5,10 +5,14 @@ const sk = {
   nav: {
     products: 'Produkty',
     investors: 'Pre Investorov',
+    selectLanguage: 'Vyber jazyk',
   },
   footer: {
     company: 'HPM company Slovakia',
+    description: 'Prefabrikované záhradné kancelárie z ekologických materiálov.',
+    quickLinks: 'Rýchle odkazy',
     contact: 'Kontakt',
+    home: 'Domov',
   },
   contact: {
     formLabel: 'Kontaktný Formulár',

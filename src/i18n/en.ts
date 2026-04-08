@@ -5,10 +5,14 @@ const en = {
   nav: {
     products: 'Products',
     investors: 'For Investors',
+    selectLanguage: 'Select Language',
   },
   footer: {
     company: 'HPM company Slovakia',
+    description: 'Prefabricated garden offices made from ecological materials.',
+    quickLinks: 'Quick Links',
     contact: 'Contact',
+    home: 'Home',
   },
   contact: {
     formLabel: 'Contact Form',
