@@ -1,0 +1,76 @@
+---
+// src/layouts/BaseLayout.astro
+import '../styles/global.css';
+import type { Lang } from '@i18n/index';
+
+interface Props {
+  title: string;
+  description?: string;
+  lang: Lang;
+  pathname?: string;
+  ogImage?: string;
+}
+
+const {
+  title,
+  description = 'HPM É-space garden offices - Prefabricated eco-friendly workspaces',
+  lang,
+  pathname = '',
+  ogImage = '/og-image.jpg'
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang={lang} dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- SEO Head slot - populated by page -->
+    <slot name="seo" />
+
+    <!-- Preload fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Preload critical assets -->
+    <link rel="preload" as="image" href="/assets/img/logo.jpg" />
+    <link rel="preload" as="style" href="/styles/global.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- DNS Prefetch for external services -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://consent.silktide.com" />
+    <link rel="dns-prefetch" href="https://formspree.io" />
+  </head>
+
+  <body class="bg-cream text-gray-800">
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main" class="visually-hidden focus:not-visually-hidden">
+      Skip to main content
+    </a>
+
+    <!-- Navbar -->
+    <slot name="navbar" />
+
+    <!-- Main Content -->
+    <main id="main" role="main">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <slot name="footer" />
+
+    <!-- Analytics (Silktide + GA4) -->
+    <slot name="analytics" />
+  </body>
+</html>
+
+<style>
+  :global(html) {
+    scroll-behavior: smooth;
+  }
+</style>
