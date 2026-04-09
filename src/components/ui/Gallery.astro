@@ -1,0 +1,88 @@
+---
+// src/components/ui/Gallery.astro
+import { Image } from 'astro:assets';
+import HotspotImage from './HotspotImage.astro';
+import { glob } from 'astro/loaders';
+
+interface Props {
+  folder: string; // e.g., 'src/assets/galleries/1'
+}
+
+const { folder } = Astro.props;
+
+// Auto-discover images (simplified - production version would use import.meta.glob)
+// For now, pass images as children or define manually per page
+const images: any[] = [];
+
+const currentImage = images[0];
+const isMultiple = images.length > 1;
+---
+
+<div class="gallery-container" data-gallery>
+  {isMultiple ? (
+    <>
+      {/* Main Image */}
+      <div class="relative w-full">
+        {currentImage?.hotspots ? (
+          <HotspotImage
+            image={currentImage.src}
+            alt={currentImage.alt}
+            hotspots={currentImage.hotspots}
+          />
+        ) : (
+          <Image src={currentImage.src} alt={currentImage.alt} class="w-full h-auto" />
+        )}
+      </div>
+
+      {/* Thumbnail Strip */}
+      <div class="overflow-x-auto py-4 px-2 bg-gray-100">
+        <div class="flex gap-3 min-w-max">
+          {images.map((img, idx) => (
+            <button
+              class={`flex-shrink-0 h-24 w-24 rounded-lg overflow-hidden border-2 transition-colors cursor-pointer ${
+                idx === 0 ? 'border-amber' : 'border-wood hover:border-amber'
+              }`}
+              data-thumbnail={idx}
+              aria-label={`View image ${idx + 1}`}
+            >
+              <Image src={img.src} alt={img.alt} class="w-full h-full object-cover" loading="lazy" />
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
+  ) : (
+    <>
+      {/* Single Image */}
+      {currentImage?.hotspots ? (
+        <HotspotImage
+          image={currentImage.src}
+          alt={currentImage.alt}
+          hotspots={currentImage.hotspots}
+        />
+      ) : (
+        <Image src={currentImage.src} alt={currentImage.alt} class="w-full h-auto" />
+      )}
+    </>
+  )}
+</div>
+
+<script>
+  // Thumbnail navigation
+  document.querySelectorAll('[data-gallery]').forEach(gallery => {
+    const thumbnails = gallery.querySelectorAll('[data-thumbnail]');
+    thumbnails.forEach((thumb, index) => {
+      thumb.addEventListener('click', () => {
+        thumbnails.forEach((t, i) => {
+          if (i === index) {
+            t.classList.remove('border-wood');
+            t.classList.add('border-amber');
+          } else {
+            t.classList.add('border-wood');
+            t.classList.remove('border-amber');
+          }
+        });
+      });
+    });
+  });
+</script>
