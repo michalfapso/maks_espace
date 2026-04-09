@@ -1,0 +1,123 @@
+---
+// src/components/ui/ContactForm.astro
+import { t, type Lang } from '@i18n/index';
+
+interface Props {
+  lang: Lang;
+  formspreeId: string;
+  whatsappNumber: string;
+}
+
+const { lang, formspreeId, whatsappNumber } = Astro.props;
+const i18n = t(lang);
+const productOptions = i18n.contact.productOptions;
+---
+
+<section class="section-padding bg-cream">
+  <div class="container max-w-2xl">
+    <h2 class="text-4xl font-bold text-wood mb-8">{i18n.contact.formLabel}</h2>
+
+    <form id="contact-form" class="space-y-6">
+      {/* Name */}
+      <div class="form-group">
+        <label for="name" class="form-label">{i18n.contact.nameLabel}</label>
+        <input type="text" id="name" name="name" required class="form-input" />
+      </div>
+
+      {/* Email */}
+      <div class="form-group">
+        <label for="email" class="form-label">{i18n.contact.emailLabel}</label>
+        <input type="email" id="email" name="email" required class="form-input" />
+      </div>
+
+      {/* Product Interest */}
+      <div class="form-group">
+        <label for="product" class="form-label">{i18n.contact.productLabel}</label>
+        <select id="product" name="product" required class="form-input">
+          <option value="">-- Vyberte produkt --</option>
+          {productOptions.map(product => (
+            <option value={product}>{product}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Note */}
+      <div class="form-group">
+        <label for="note" class="form-label">{i18n.contact.noteLabel}</label>
+        <textarea id="note" name="note" rows={5} maxlength={500} class="form-input"></textarea>
+      </div>
+
+      {/* Submit Button */}
+      <button type="submit" class="btn btn-primary w-full">
+        {i18n.contact.submitBtn}
+      </button>
+    </form>
+
+    {/* Success/Error Messages */}
+    <div id="form-message" class="mt-6 hidden p-4 rounded-lg"></div>
+
+    {/* WhatsApp Link */}
+    <div class="mt-8 pt-8 border-t border-wood">
+      <p class="text-center text-gray-600 mb-4">— {i18n.contact.whatsappBtn} —</p>
+      <a
+        href={`https://wa.me/${whatsappNumber.replace(/\D/g, '')}`}
+        id="whatsapp-link"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-secondary block text-center"
+      >
+        {i18n.contact.whatsappBtn}
+      </a>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ formspreeId, whatsappNumber, messages: i18n.contact }}>
+  const form = document.getElementById('contact-form');
+  const messageDiv = document.getElementById('form-message');
+  const whatsappLink = document.getElementById('whatsapp-link');
+  const nameInput = document.getElementById('name');
+  const productInput = document.getElementById('product');
+
+  // Update WhatsApp link dynamically
+  const updateWhatsAppLink = () => {
+    const name = nameInput.value || 'User';
+    const product = productInput.value || 'Your product';
+    const text = `Dobrý deň, volám sa ${name} a mám záujem o ${product}.`;
+    const number = whatsappNumber.replace(/\D/g, '');
+    whatsappLink.href = `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+  };
+
+  nameInput.addEventListener('input', updateWhatsAppLink);
+  productInput.addEventListener('change', updateWhatsAppLink);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+
+    try {
+      const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: formData,
+      });
+
+      if (response.ok) {
+        messageDiv.textContent = messages.successMsg;
+        messageDiv.className = 'mt-6 p-4 rounded-lg bg-green-100 text-green-800';
+        messageDiv.classList.remove('hidden');
+        form.reset();
+      } else {
+        messageDiv.textContent = messages.errorMsg;
+        messageDiv.className = 'mt-6 p-4 rounded-lg bg-red-100 text-red-800';
+        messageDiv.classList.remove('hidden');
+      }
+    } catch (error) {
+      messageDiv.textContent = messages.errorMsg;
+      messageDiv.className = 'mt-6 p-4 rounded-lg bg-red-100 text-red-800';
+      messageDiv.classList.remove('hidden');
+    }
+  });
+</script>
