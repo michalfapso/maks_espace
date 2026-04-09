@@ -13,6 +13,10 @@ const cs = {
     quickLinks: 'Rychlé odkazy',
     contact: 'Kontakt',
     home: 'Domov',
+    copyright: '© 2026 HPM company Slovakia. Všechna práva vyhrazena.',
+    privacyPolicy: 'Zásady ochrany osobních údajů',
+    termsOfService: 'Podmínky služby',
+    cookieSettings: 'Nastavení souborů cookie',
   },
   contact: {
     formLabel: 'Kontaktní Formulář',

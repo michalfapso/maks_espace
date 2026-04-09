@@ -11,6 +11,10 @@ export interface TranslationSet {
     description?: string;
     quickLinks?: string;
     home?: string;
+    copyright?: string;
+    privacyPolicy?: string;
+    termsOfService?: string;
+    cookieSettings?: string;
   };
   contact: {
     formLabel: string;
