@@ -29,6 +29,8 @@ const cs = {
     successMsg: 'Děkujeme! Brzy se vám ozveme.',
     errorMsg: 'Chyba při odesílání. Zkuste prosím znovu.',
     productOptions: ['Hay Office Solo', 'Hay Studio Duo', 'Nature Meeting Cube', 'Jiné'],
+    selectProductLabel: '-- Vyberte produkt --',
+    whatsappTemplate: 'Dobrý den, jmenuji se {name} a zajímá mě {product}.',
   },
 } as const satisfies TranslationSet;
 

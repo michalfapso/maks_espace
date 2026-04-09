@@ -27,5 +27,7 @@ export interface TranslationSet {
     successMsg: string;
     errorMsg: string;
     productOptions: [string, string, string, string]; // 4 options: 3 products + Other
+    selectProductLabel?: string;
+    whatsappTemplate?: string;
   };
 }

@@ -34,7 +34,7 @@ const productOptions = i18n.contact.productOptions;
       <div class="form-group">
         <label for="product" class="form-label">{i18n.contact.productLabel}</label>
         <select id="product" name="product" required class="form-input">
-          <option value="">-- Vyberte produkt --</option>
+          <option value="">{i18n.contact.selectProductLabel}</option>
           {productOptions.map(product => (
             <option value={product}>{product}</option>
           ))}
@@ -83,7 +83,9 @@ const productOptions = i18n.contact.productOptions;
   const updateWhatsAppLink = () => {
     const name = nameInput.value || 'User';
     const product = productInput.value || 'Your product';
-    const text = `Dobrý deň, volám sa ${name} a mám záujem o ${product}.`;
+    const text = messages.whatsappTemplate
+      .replace('{name}', name)
+      .replace('{product}', product);
     const number = whatsappNumber.replace(/\D/g, '');
     whatsappLink.href = `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
   };

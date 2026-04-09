@@ -29,6 +29,8 @@ const en = {
     successMsg: 'Thank you! We\'ll be in touch soon.',
     errorMsg: 'Error sending message. Please try again.',
     productOptions: ['Hay Office Solo', 'Hay Studio Duo', 'Nature Meeting Cube', 'Other'],
+    selectProductLabel: '-- Select product --',
+    whatsappTemplate: 'Hello, my name is {name} and I am interested in {product}.',
   },
 } as const satisfies TranslationSet;
 
