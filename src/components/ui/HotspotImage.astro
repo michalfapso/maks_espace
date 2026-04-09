@@ -1,0 +1,92 @@
+---
+// src/components/ui/HotspotImage.astro
+import { Image } from 'astro:assets';
+
+export interface Hotspot {
+  id: string;
+  x: number;
+  y: number;
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  image: any;
+  alt: string;
+  hotspots: Hotspot[];
+}
+
+const { image, alt, hotspots } = Astro.props;
+const hasPrice = (label: string) => /€|\d+.*€/.test(label);
+---
+
+<div class="relative w-full inline-block" data-hotspot-image>
+  <Image src={image} alt={alt} class="w-full h-auto" loading="lazy" />
+
+  {/* Hotspot Dots */}
+  <div class="absolute inset-0">
+    {hotspots.map(hotspot => (
+      <button
+        class="absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+        style={`left: ${hotspot.x}%; top: ${hotspot.y}%;`}
+        data-hotspot-id={hotspot.id}
+        data-hotspot-label={hotspot.label}
+        data-hotspot-href={hotspot.href || ''}
+        data-hotspot-price={hasPrice(hotspot.label) ? 'true' : 'false'}
+        aria-label={`Hotspot: ${hotspot.label}`}
+      >
+        <span class="absolute inset-0 rounded-full border-2 border-amber animate-pulse"></span>
+        <span class="absolute inset-1 rounded-full bg-amber"></span>
+      </button>
+    ))}
+  </div>
+
+  {/* Popup Container */}
+  <div class="absolute pointer-events-none opacity-0 transition-opacity duration-200" data-hotspot-popup>
+    <div class="bg-white/95 backdrop-blur rounded-lg shadow-xl p-4 max-w-xs pointer-events-auto" data-popup-content></div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-hotspot-image]').forEach(container => {
+    const buttons = container.querySelectorAll('[data-hotspot-id]');
+    const popup = container.querySelector('[data-hotspot-popup]');
+    const popupContent = container.querySelector('[data-popup-content]');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const label = button.getAttribute('data-hotspot-label') || '';
+        const href = button.getAttribute('data-hotspot-href');
+        const hasPrice = button.getAttribute('data-hotspot-price') === 'true';
+
+        let html = '';
+        if (hasPrice && href) {
+          html = `<a href="${href}" class="block text-amber font-semibold hover:underline">${label}</a>`;
+        } else if (href) {
+          html = `<a href="${href}" class="text-amber font-semibold hover:underline">${label}</a>`;
+        } else {
+          html = `<p class="text-gray-800">${label}</p>`;
+        }
+
+        popupContent.innerHTML = html;
+
+        const x = button.offsetLeft;
+        let y = button.offsetTop - 100;
+        if (y < 0) y = button.offsetTop + 30;
+
+        popup.style.left = x + 'px';
+        popup.style.top = y + 'px';
+        popup.style.transform = 'translateX(-50%)';
+        popup.classList.add('active');
+      });
+    });
+
+    document.addEventListener('click', () => popup.classList.remove('active'));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') popup.classList.remove('active');
+    });
+  });
+</script>
