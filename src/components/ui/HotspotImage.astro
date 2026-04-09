@@ -1,6 +1,6 @@
 ---
 // src/components/ui/HotspotImage.astro
-import { Image } from 'astro:assets';
+import { Image, type ImageMetadata } from 'astro:assets';
 
 export interface Hotspot {
   id: string;
@@ -11,7 +11,7 @@ export interface Hotspot {
 }
 
 interface Props {
-  image: any;
+  image: ImageMetadata;
   alt: string;
   hotspots: Hotspot[];
 }
@@ -62,16 +62,26 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         const href = button.getAttribute('data-hotspot-href');
         const hasPrice = button.getAttribute('data-hotspot-price') === 'true';
 
-        let html = '';
+        popupContent.innerHTML = '';
+
+        let element;
         if (hasPrice && href) {
-          html = `<a href="${href}" class="block text-amber font-semibold hover:underline">${label}</a>`;
+          element = document.createElement('a');
+          element.href = href;
+          element.className = 'block text-amber font-semibold hover:underline';
+          element.textContent = label;
         } else if (href) {
-          html = `<a href="${href}" class="text-amber font-semibold hover:underline">${label}</a>`;
+          element = document.createElement('a');
+          element.href = href;
+          element.className = 'text-amber font-semibold hover:underline';
+          element.textContent = label;
         } else {
-          html = `<p class="text-gray-800">${label}</p>`;
+          element = document.createElement('p');
+          element.className = 'text-gray-800';
+          element.textContent = label;
         }
 
-        popupContent.innerHTML = html;
+        popupContent.appendChild(element);
 
         const x = button.offsetLeft;
         let y = button.offsetTop - 100;
@@ -84,9 +94,15 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
       });
     });
 
-    document.addEventListener('click', () => popup.classList.remove('active'));
+    const controller = new AbortController();
+
+    document.addEventListener('click',
+      () => popup.classList.remove('active'),
+      { signal: controller.signal }
+    );
+
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') popup.classList.remove('active');
-    });
+    }, { signal: controller.signal });
   });
 </script>
