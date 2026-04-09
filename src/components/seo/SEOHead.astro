@@ -1,0 +1,74 @@
+---
+// src/components/seo/SEOHead.astro
+import { LANG_META, getInvestorPath, getProductsPath, type Lang, SUPPORTED_LANGS } from '@i18n/index';
+
+interface Props {
+  title: string;
+  description: string;
+  lang: Lang;
+  pathname?: string;
+  ogImage?: string;
+  ogType?: string;
+  seoKeywords?: string[];
+}
+
+const {
+  title,
+  description,
+  lang,
+  pathname = '',
+  ogImage = '/og-image.jpg',
+  ogType = 'website',
+  seoKeywords = []
+} = Astro.props;
+
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://espace-gardens.com';
+const langMeta = LANG_META[lang];
+const canonicalUrl = `${siteUrl}${pathname}`;
+
+// Generate hreflang alternates
+const hreflangLinks = SUPPORTED_LANGS.map(langCode => {
+  let href = pathname;
+  if (pathname.includes('investorov') || pathname.includes('investors') || pathname.includes('investory')) {
+    href = getInvestorPath(langCode as Lang);
+  } else if (pathname.includes(`/${lang}/`)) {
+    href = getProductsPath(langCode as Lang);
+  }
+  return {
+    hreflang: langCode === 'sk' ? 'sk-SK' : langCode === 'en' ? 'en-GB' : 'cs-CZ',
+    href: `${siteUrl}${href}`,
+  };
+});
+---
+
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+{seoKeywords.length > 0 && (
+  <meta name="keywords" content={seoKeywords.join(', ')} />
+)}
+<meta name="robots" content="index, follow" />
+<meta name="language" content={lang} />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={`${siteUrl}${ogImage}`} />
+<meta property="og:locale" content={langMeta.ogLocale} />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={canonicalUrl} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={`${siteUrl}${ogImage}`} />
+
+<!-- hreflang Alternates -->
+{hreflangLinks.map(link => (
+  <link rel="alternate" hreflang={link.hreflang} href={link.href} />
+))}
