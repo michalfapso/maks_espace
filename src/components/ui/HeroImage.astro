@@ -1,0 +1,32 @@
+---
+// src/components/ui/HeroImage.astro
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: any;
+  alt: string;
+  title?: string;
+  subtitle?: string;
+}
+
+const { src, alt, title, subtitle } = Astro.props;
+---
+
+<section class="relative w-full h-screen flex items-center justify-center overflow-hidden">
+  <Image
+    src={src}
+    alt={alt}
+    class="absolute inset-0 w-full h-full object-cover"
+    quality="high"
+    loading="eager"
+  />
+
+  {(title || subtitle) && (
+    <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+      <div class="text-center text-cream z-10">
+        {title && <h1 class="text-4xl md:text-6xl font-bold mb-4">{title}</h1>}
+        {subtitle && <p class="text-xl md:text-2xl">{subtitle}</p>}
+      </div>
+    </div>
+  )}
+</section>
