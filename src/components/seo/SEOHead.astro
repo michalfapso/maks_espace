@@ -4,7 +4,7 @@ import { LANG_META, getInvestorPath, getProductsPath, type Lang, SUPPORTED_LANGS
 
 interface Props {
   title: string;
-  description: string;
+  description?: string;
   lang: Lang;
   pathname?: string;
   ogImage?: string;
@@ -14,7 +14,7 @@ interface Props {
 
 const {
   title,
-  description,
+  description = 'HPM É-space garden offices - Prefabricated eco-friendly workspaces',
   lang,
   pathname = '',
   ogImage = '/og-image.jpg',
@@ -25,11 +25,13 @@ const {
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'https://espace-gardens.com';
 const langMeta = LANG_META[lang];
 const canonicalUrl = `${siteUrl}${pathname}`;
+const ogImageUrl = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
 
 // Generate hreflang alternates
+const investorPathPattern = /(\/sk\/pre-investorov|\/en\/for-investors|\/cs\/pro-investory)(\/|$)/;
 const hreflangLinks = SUPPORTED_LANGS.map(langCode => {
   let href = pathname;
-  if (pathname.includes('investorov') || pathname.includes('investors') || pathname.includes('investory')) {
+  if (investorPathPattern.test(pathname)) {
     href = getInvestorPath(langCode as Lang);
   } else if (pathname.includes(`/${lang}/`)) {
     href = getProductsPath(langCode as Lang);
@@ -49,7 +51,6 @@ const hreflangLinks = SUPPORTED_LANGS.map(langCode => {
 )}
 <meta name="robots" content="index, follow" />
 <meta name="language" content={lang} />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <link rel="canonical" href={canonicalUrl} />
 
@@ -58,7 +59,7 @@ const hreflangLinks = SUPPORTED_LANGS.map(langCode => {
 <meta property="og:url" content={canonicalUrl} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={`${siteUrl}${ogImage}`} />
+<meta property="og:image" content={ogImageUrl} />
 <meta property="og:locale" content={langMeta.ogLocale} />
 
 <!-- Twitter Card -->
@@ -66,7 +67,7 @@ const hreflangLinks = SUPPORTED_LANGS.map(langCode => {
 <meta name="twitter:url" content={canonicalUrl} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={`${siteUrl}${ogImage}`} />
+<meta name="twitter:image" content={ogImageUrl} />
 
 <!-- hreflang Alternates -->
 {hreflangLinks.map(link => (
