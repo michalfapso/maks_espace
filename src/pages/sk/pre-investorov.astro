@@ -1,0 +1,134 @@
+---
+// src/pages/sk/pre-investorov.astro
+import PageLayout from '@layouts/PageLayout.astro';
+import ContactForm from '@components/ui/ContactForm.astro';
+
+const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
+const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER;
+---
+
+<PageLayout
+  title="PITCH-DECK pre investorov"
+  description="Business opportunity: prefab garden offices from eco-materials"
+  lang="sk"
+  pathname="/sk/pre-investorov/"
+>
+  {/* Vision */}
+  <section class="section-padding">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-4">Vôňa sena a ticho prírody – vaša každodenná kancelária</h2>
+      <p class="text-lg text-gray-600">Prefabrikované záhradné kancelárie z konope a slamy pre Česko a Slovensko.</p>
+    </div>
+  </section>
+
+  {/* Problem */}
+  <section class="section-padding bg-cream">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Problém</h2>
+      <ul class="space-y-4">
+        <li class="flex gap-3">
+          <span class="text-amber font-bold">•</span>
+          <span>Segment „garden offices" v EÚ prudko rastie, no väčšina riešení využíva štandardné materiály</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-amber font-bold">•</span>
+          <span>Bez regulácie klimatizácie a s high TCO (celoživotné náklady)</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-amber font-bold">•</span>
+          <span>Zákazníci žiadajú ekologické riešenia, ale nemajú prístup k nim</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {/* Solution */}
+  <section class="section-padding">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Riešenie</h2>
+      <p class="text-lg text-gray-600 mb-4">HPM É-space ponúka prefabrikované záhradné kancelárie vyrobené z konope a slamy s:</p>
+      <ul class="space-y-3">
+        <li class="flex gap-3">
+          <span class="text-amber font-bold">•</span>
+          <span>Prirodzenou izoláciou a nízkou výrobnou stopou</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-amber font-bold">•</span>
+          <span>Certifikáciou CO2 neutrality</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-amber font-bold">•</span>
+          <span>Modulárnym dizajnom a rýchlou inštaláciou</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {/* Roadmap */}
+  <section class="section-padding bg-cream">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Plán rozvoja</h2>
+      <ul class="space-y-4">
+        <li>
+          <strong>Q1 2026:</strong> Certifikácia a registrácia na trhu
+        </li>
+        <li>
+          <strong>Q2 2026:</strong> Príjatie prvých objednávok, spustenie výroby
+        </li>
+        <li>
+          <strong>Q3–Q4 2026:</strong> Expanzia na česko-slovenskú a stredno-európsku trh
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {/* Market */}
+  <section class="section-padding">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Trhový potenciál</h2>
+      <p class="text-lg text-gray-600">Segment garden offices v EÚ: 2.5B EUR ročne a rastie 15% ročne. Cieľový trh SK/CZ: 50M EUR ročne.</p>
+    </div>
+  </section>
+
+  {/* Business Model */}
+  <section class="section-padding bg-cream">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Obchodný model</h2>
+      <ul class="space-y-3">
+        <li><strong>B2B:</strong> Predaj staviteľom, správcom nehnuteľností, developerom</li>
+        <li><strong>B2C:</strong> Priamy predaj cez web a malieb partners</li>
+        <li><strong>Marža:</strong> 40–50% hrubá marža pri sériovej výrobe</li>
+      </ul>
+    </div>
+  </section>
+
+  {/* Why Us */}
+  <section class="section-padding">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Prečo my</h2>
+      <ul class="space-y-3">
+        <li>Prvý hráč s certifikovanými ekológickými materiálmi na trhu</li>
+        <li>Patenty na modulárne znaky a stavebný systém</li>
+        <li>Tím s 15+ rokmi skúsenosti v prefabrikanoch a udržateľnosti</li>
+        <li>Potvrdená dopyt zákazníkov (200+ požiadaviek v prvých mesiacoch)</li>
+      </ul>
+    </div>
+  </section>
+
+  {/* Ask */}
+  <section class="section-padding bg-cream">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Čo hľadáme</h2>
+      <p class="text-lg text-gray-600 mb-4">Investícia: 500 tis. EUR na pokrytie:</p>
+      <ul class="space-y-2">
+        <li>• Certifikácia a registrácia produktu</li>
+        <li>• Špecializovaná výrobná linka</li>
+        <li>• Marketing a spustenie predaja</li>
+        <li>• Pracovný kapitál pre prvý rok</li>
+      </ul>
+    </div>
+  </section>
+
+  {/* Contact Form */}
+  <ContactForm lang="sk" formspreeId={formspreeId} whatsappNumber={whatsappNumber} />
+</PageLayout>

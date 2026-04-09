@@ -1,0 +1,134 @@
+---
+// src/pages/en/for-investors.astro
+import PageLayout from '@layouts/PageLayout.astro';
+import ContactForm from '@components/ui/ContactForm.astro';
+
+const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
+const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER;
+---
+
+<PageLayout
+  title="PITCH-DECK for Investors"
+  description="Business opportunity: prefab garden offices from eco-materials"
+  lang="en"
+  pathname="/en/for-investors/"
+>
+  {/* Vision */}
+  <section class="section-padding">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-4">The scent of hay and nature's silence – your daily office</h2>
+      <p class="text-lg text-gray-600">Prefabricated garden offices made from hemp and straw for Czech Republic and Slovakia.</p>
+    </div>
+  </section>
+
+  {/* Problem */}
+  <section class="section-padding bg-cream">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">The Problem</h2>
+      <ul class="space-y-4">
+        <li class="flex gap-3">
+          <span class="text-amber font-bold">•</span>
+          <span>The "garden offices" segment in the EU is booming, but most solutions use standard materials</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-amber font-bold">•</span>
+          <span>Without climate control regulation and with high TCO (total cost of ownership)</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-amber font-bold">•</span>
+          <span>Customers demand eco-friendly solutions, but they lack access to them</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {/* Solution */}
+  <section class="section-padding">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Our Solution</h2>
+      <p class="text-lg text-gray-600 mb-4">HPM É-space offers prefabricated garden offices made from hemp and straw with:</p>
+      <ul class="space-y-3">
+        <li class="flex gap-3">
+          <span class="text-amber font-bold">•</span>
+          <span>Natural insulation and low manufacturing footprint</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-amber font-bold">•</span>
+          <span>CO2 neutrality certification</span>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-amber font-bold">•</span>
+          <span>Modular design and rapid installation</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {/* Roadmap */}
+  <section class="section-padding bg-cream">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Development Roadmap</h2>
+      <ul class="space-y-4">
+        <li>
+          <strong>Q1 2026:</strong> Product certification and market registration
+        </li>
+        <li>
+          <strong>Q2 2026:</strong> First orders received, production launch
+        </li>
+        <li>
+          <strong>Q3–Q4 2026:</strong> Expansion to Czech-Slovak and Central European markets
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  {/* Market */}
+  <section class="section-padding">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Market Potential</h2>
+      <p class="text-lg text-gray-600">The garden offices segment in the EU: EUR 2.5B annually and growing 15% year-over-year. Target market SK/CZ: EUR 50M annually.</p>
+    </div>
+  </section>
+
+  {/* Business Model */}
+  <section class="section-padding bg-cream">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Business Model</h2>
+      <ul class="space-y-3">
+        <li><strong>B2B:</strong> Sales to builders, property managers, and developers</li>
+        <li><strong>B2C:</strong> Direct sales via web and retail partners</li>
+        <li><strong>Margin:</strong> 40–50% gross margin at scale</li>
+      </ul>
+    </div>
+  </section>
+
+  {/* Why Us */}
+  <section class="section-padding">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Why Us</h2>
+      <ul class="space-y-3">
+        <li>First player with certified eco-friendly materials in the market</li>
+        <li>Patents on modular characteristics and building system</li>
+        <li>Team with 15+ years of experience in prefabrication and sustainability</li>
+        <li>Confirmed customer demand (200+ inquiries in first months)</li>
+      </ul>
+    </div>
+  </section>
+
+  {/* Ask */}
+  <section class="section-padding bg-cream">
+    <div class="container max-w-3xl">
+      <h2 class="text-4xl font-bold text-wood mb-6">Investment Ask</h2>
+      <p class="text-lg text-gray-600 mb-4">Investment: EUR 500K to cover:</p>
+      <ul class="space-y-2">
+        <li>• Product certification and registration</li>
+        <li>• Specialized production line</li>
+        <li>• Marketing and sales launch</li>
+        <li>• Working capital for first year</li>
+      </ul>
+    </div>
+  </section>
+
+  {/* Contact Form */}
+  <ContactForm lang="en" formspreeId={formspreeId} whatsappNumber={whatsappNumber} />
+</PageLayout>
