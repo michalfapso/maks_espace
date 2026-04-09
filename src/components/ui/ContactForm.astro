@@ -4,11 +4,11 @@ import { t, type Lang } from '@i18n/index';
 
 interface Props {
   lang: Lang;
-  formspreeId: string;
-  whatsappNumber: string;
+  formspreeId?: string;
+  whatsappNumber?: string;
 }
 
-const { lang, formspreeId, whatsappNumber } = Astro.props;
+const { lang, formspreeId = '', whatsappNumber = '+421900000000' } = Astro.props;
 const i18n = t(lang);
 const productOptions = i18n.contact.productOptions;
 ---

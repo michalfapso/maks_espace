@@ -18,10 +18,4 @@ export default defineConfig({
       external: ['glightbox'],
     },
   },
-  env: {
-    schema: {
-      PUBLIC_SITE_URL: 'string',
-      PUBLIC_GA_ID: 'string',
-    },
-  },
 });
