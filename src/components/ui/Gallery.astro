@@ -2,36 +2,62 @@
 // src/components/ui/Gallery.astro
 import { Image } from 'astro:assets';
 import HotspotImage from './HotspotImage.astro';
-import { glob } from 'astro/loaders';
 
 interface Props {
   folder: string; // e.g., 'src/assets/galleries/1'
 }
 
+interface ImageItem {
+  src: any;  // ImageMetadata, but avoid strict mode issue with component-wide any for now
+  alt: string;
+  hotspots?: any[];  // Array of Hotspot if available
+}
+
+/**
+ * Gallery component for displaying image collections
+ *
+ * Currently expects images to be passed as an array with structure:
+ * { src: ImageMetadata, alt: string, hotspots?: Hotspot[] }
+ *
+ * Future: Will support auto-discovery via folder + import.meta.glob()
+ * The 'folder' prop is reserved for future use with dynamic image loading
+ */
+
 const { folder } = Astro.props;
 
 // Auto-discover images (simplified - production version would use import.meta.glob)
 // For now, pass images as children or define manually per page
-const images: any[] = [];
+const images: ImageItem[] = [];
 
 const currentImage = images[0];
+const isEmpty = !currentImage;
 const isMultiple = images.length > 1;
+
+const renderImage = () => {
+  if (!currentImage) return null;
+  if (currentImage?.hotspots) {
+    return (
+      <HotspotImage
+        image={currentImage.src}
+        alt={currentImage.alt}
+        hotspots={currentImage.hotspots}
+      />
+    );
+  }
+  return <Image src={currentImage.src} alt={currentImage.alt} class="w-full h-auto" />;
+};
 ---
 
 <div class="gallery-container" data-gallery>
-  {isMultiple ? (
+  {isEmpty ? (
+    <div class="flex items-center justify-center w-full bg-gray-100 rounded-lg p-8 min-h-64">
+      <p class="text-gray-500 text-center">No images available in this gallery</p>
+    </div>
+  ) : isMultiple ? (
     <>
       {/* Main Image */}
       <div class="relative w-full">
-        {currentImage?.hotspots ? (
-          <HotspotImage
-            image={currentImage.src}
-            alt={currentImage.alt}
-            hotspots={currentImage.hotspots}
-          />
-        ) : (
-          <Image src={currentImage.src} alt={currentImage.alt} class="w-full h-auto" />
-        )}
+        {renderImage()}
       </div>
 
       {/* Thumbnail Strip */}
@@ -54,15 +80,7 @@ const isMultiple = images.length > 1;
   ) : (
     <>
       {/* Single Image */}
-      {currentImage?.hotspots ? (
-        <HotspotImage
-          image={currentImage.src}
-          alt={currentImage.alt}
-          hotspots={currentImage.hotspots}
-        />
-      ) : (
-        <Image src={currentImage.src} alt={currentImage.alt} class="w-full h-auto" />
-      )}
+      {renderImage()}
     </>
   )}
 </div>
