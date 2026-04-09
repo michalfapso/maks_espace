@@ -14,7 +14,7 @@ const { name, size, price, description, reverse = false } = Astro.props;
 
 <section class="section-padding bg-white">
   <div class="container">
-    <div class={`grid grid-cols-1 md:grid-cols-2 gap-12 items-center ${reverse ? 'md:grid-cols-2 md:[&>:first-child]:order-2' : ''}`}>
+    <div class={`grid grid-cols-1 md:grid-cols-2 gap-12 items-center ${reverse ? 'md:[&>:first-child]:order-2' : ''}`}>
       {/* Image Slot */}
       <div>
         <slot name="image" />
@@ -23,12 +23,12 @@ const { name, size, price, description, reverse = false } = Astro.props;
       {/* Text Content */}
       <div>
         <h2 class="text-3xl font-bold text-wood mb-2">{name}</h2>
-        <p class="text-lg text-amber font-semibold mb-4">{size} • {price}</p>
+        <p class="text-lg text-wood font-semibold mb-4">{size} • {price}</p>
 
         <ul class="space-y-3 mb-6">
           {description.map(point => (
             <li class="flex gap-3">
-              <span class="text-amber text-xl flex-shrink-0">•</span>
+              <span class="text-wood text-xl flex-shrink-0">•</span>
               <span>{point}</span>
             </li>
           ))}
