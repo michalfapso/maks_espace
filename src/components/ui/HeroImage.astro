@@ -1,9 +1,9 @@
 ---
 // src/components/ui/HeroImage.astro
-import { Image } from 'astro:assets';
+import { Image, type ImageMetadata } from 'astro:assets';
 
 interface Props {
-  src: any;
+  src: ImageMetadata;
   alt: string;
   title?: string;
   subtitle?: string;
