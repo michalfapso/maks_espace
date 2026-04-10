@@ -66,12 +66,14 @@ hotspots:
   - label: "Kitchen"
     x: 25
     y: 40
+    href: "/products/kitchen-setup"
   - label: "Bedroom"
     x: 75
     y: 60
-  - label: "Living Room"
+  - label: "€12,000"
     x: 50
     y: 50
+    href: "https://example.com/pricing"
 ```
 
 Fields:
@@ -79,6 +81,7 @@ Fields:
 - `label`: Human-readable hotspot label (required if hotspots present)
 - `x`: Horizontal position as percentage 0-100 (required if hotspots present)
 - `y`: Vertical position as percentage 0-100 (required if hotspots present)
+- `href`: Optional link URL (can be relative or absolute; if present, hotspot becomes clickable link)
 
 ## Implementation Details
 
@@ -102,7 +105,14 @@ Fields:
    interface ImageItem {
      src: any;              // ImageMetadata from glob
      alt: string;           // Generated from filename
-     hotspots?: any[];      // From YAML, if present
+     hotspots?: Hotspot[];  // From YAML, if present
+   }
+   
+   interface Hotspot {
+     label: string;         // Required
+     x: number;             // 0-100 (percentage)
+     y: number;             // 0-100 (percentage)
+     href?: string;         // Optional link (relative or absolute)
    }
    ```
 
