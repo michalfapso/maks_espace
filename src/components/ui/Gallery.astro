@@ -34,6 +34,17 @@ function generateAltText(filename: string): string {
 }
 
 /**
+ * Sort filenames using natural numeric order
+ * Examples:
+ *   ["10_image.jpg", "2_image.jpg", "1_image.jpg"] → ["1_image.jpg", "2_image.jpg", "10_image.jpg"]
+ */
+function sortFilenamesNumerically(filenames: string[]): string[] {
+  return [...filenames].sort((a, b) =>
+    a.localeCompare(b, 'en', { numeric: true })
+  );
+}
+
+/**
  * Gallery component for displaying image collections
  *
  * Auto-discovers images from a folder using import.meta.glob() at build time.
