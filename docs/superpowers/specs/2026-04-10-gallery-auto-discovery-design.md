@@ -103,18 +103,13 @@ Fields:
 4. **Image Object Construction**
    ```typescript
    interface ImageItem {
-     src: any;              // ImageMetadata from glob
-     alt: string;           // Generated from filename
-     hotspots?: Hotspot[];  // From YAML, if present
-   }
-   
-   interface Hotspot {
-     label: string;         // Required
-     x: number;             // 0-100 (percentage)
-     y: number;             // 0-100 (percentage)
-     href?: string;         // Optional link (relative or absolute)
+     src: any;                    // ImageMetadata from glob
+     alt: string;                 // Generated from filename
+     hotspots?: Hotspot[];        // From YAML, if present
    }
    ```
+   - `Hotspot` interface is imported from `HotspotImage.astro` component (reuse existing type)
+   - Contains: `label`, `x`, `y`, `id`, `href` (optional)
 
 5. **Alt Text Generation Algorithm**
    - Extract filename without extension: `1_podorys.jpg` → `1_podorys`
@@ -126,7 +121,12 @@ Fields:
    - Use `Array.sort((a, b) => a.localeCompare(b, 'en', {numeric: true}))`
    - Applied to filenames after extraction
 
-7. **Error Handling**
+7. **Hotspot ID Generation**
+   - Generate unique `id` for each hotspot at build time
+   - Format: `hotspot-{imageName}-{index}` (e.g., `hotspot-podorys-0`)
+   - Ensures each hotspot has a stable, unique identifier for the UI
+
+8. **Error Handling**
    - Missing folder → render empty state with message
    - Invalid YAML → log warning, skip hotspots for that image, still render image
    - Missing YAML file → render image without hotspots (expected behavior)
