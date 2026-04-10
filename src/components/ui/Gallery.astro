@@ -14,13 +14,38 @@ interface ImageItem {
 }
 
 /**
+ * Generate alt text from filename by stripping numeric prefix and separators
+ * Examples:
+ *   "1_podorys.jpg" → "podorys"
+ *   "3-bedroom-view.jpg" → "bedroom view"
+ *   "image.jpg" → "image"
+ */
+function generateAltText(filename: string): string {
+  // Remove file extension
+  const nameWithoutExt = filename.replace(/\.[^/.]+$/, '');
+
+  // Strip leading digits and separators (_, -, space)
+  const withoutPrefix = nameWithoutExt.replace(/^\d+[\s_-]+/, '');
+
+  // Replace remaining underscores and hyphens with spaces
+  const altText = withoutPrefix.replace(/[_-]+/g, ' ');
+
+  return altText;
+}
+
+/**
  * Gallery component for displaying image collections
  *
- * Currently expects images to be passed as an array with structure:
- * { src: ImageMetadata, alt: string, hotspots?: Hotspot[] }
+ * Auto-discovers images from a folder using import.meta.glob() at build time.
  *
- * Future: Will support auto-discovery via folder + import.meta.glob()
- * The 'folder' prop is reserved for future use with dynamic image loading
+ * Expects folder structure:
+ *   src/assets/galleries/{name}/
+ *     ├── 1_image-name.jpg
+ *     ├── 1_image-name.yaml (optional, for hotspots)
+ *     └── ...
+ *
+ * Alt text is generated from filename: "1_podorys.jpg" → "podorys"
+ * Hotspots loaded from YAML sidecar files if present.
  */
 
 const { folder } = Astro.props;
