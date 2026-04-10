@@ -12,7 +12,7 @@ interface Props {
 interface ImageItem {
   src: any;  // ImageMetadata, but avoid strict mode issue with component-wide any for now
   alt: string;
-  hotspots?: any[];  // Array of Hotspot if available
+  hotspots?: Hotspot[];  // Array of Hotspot if available
 }
 
 /**
@@ -59,11 +59,6 @@ function generateHotspotId(imageName: string, index: number): string {
  * Returns array of ImageItem objects ready for rendering
  */
 async function discoverImages(folderPath: string) {
-  // Resolve absolute path for glob pattern
-  // Example: "src/assets/galleries/1" → glob pattern for that folder
-  const imagePath = folderPath.replace(/^src\//, '');
-  const globPattern = `../../assets/${imagePath}/*.jpg`;
-
   // Discover JPG files
   const imageModules = import.meta.glob<{ default: any }>(
     '../../assets/galleries/**/*.jpg',
@@ -76,12 +71,13 @@ async function discoverImages(folderPath: string) {
     { eager: true, as: 'raw' }
   );
 
-  // Filter images and YAML to matching folder
+  // Filter images and YAML to matching folder using regex-based path boundary check
   const folderName = folderPath.split('/').pop() || '';
-  const folderPattern = `../assets/galleries/${folderName}/`;
+  const folderRegex = new RegExp(`galleries/${folderName}/.*\\.jpg$`);
+  const yamlRegex = new RegExp(`galleries/${folderName}/.*\\.yaml$`);
 
   const matchingImages = Object.entries(imageModules)
-    .filter(([path]) => path.includes(folderName))
+    .filter(([path]) => folderRegex.test(path))
     .map(([path, module]) => ({
       path,
       filename: path.split('/').pop() || '',
@@ -91,7 +87,7 @@ async function discoverImages(folderPath: string) {
   // Create map of YAML data by image filename (without extension)
   const yamlDataMap: Record<string, any> = {};
   Object.entries(yamlModules)
-    .filter(([path]) => path.includes(folderName))
+    .filter(([path]) => yamlRegex.test(path))
     .forEach(([path, content]) => {
       try {
         const yamlFilename = path.split('/').pop() || '';
@@ -102,13 +98,14 @@ async function discoverImages(folderPath: string) {
       }
     });
 
-  // Sort images numerically
+  // Sort images numerically with O(1) lookup using a map
+  const imageMap = new Map(matchingImages.map(img => [img.filename, img]));
   const sortedImages = sortFilenamesNumerically(
     matchingImages.map(img => img.filename)
-  ).map(filename => matchingImages.find(img => img.filename === filename)!);
+  ).map(filename => imageMap.get(filename)!);
 
   // Build ImageItem array with hotspots
-  const images = sortedImages.map((img, index) => {
+  const images = sortedImages.map((img) => {
     const imageName = img.filename.replace(/\.[^/.]+$/, '');
     const yamlData = yamlDataMap[imageName];
 
