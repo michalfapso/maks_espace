@@ -1,0 +1,9 @@
+hotspots:
+  - label: "Kitchen Area"
+    x: 25
+    y: 30
+    href: "/products/kitchen-setup"
+  - label: "€12,000"
+    x: 75
+    y: 60
+    href: "/pricing"
