@@ -1,0 +1,89 @@
+---
+// src/pages/en/index.astro
+import PageLayout from '@layouts/PageLayout.astro';
+import HeroImage from '@components/ui/HeroImage.astro';
+import ProductSection from '@components/ui/ProductSection.astro';
+import ContactForm from '@components/ui/ContactForm.astro';
+import heroImage from '@assets/img/hero.jpg';
+
+const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
+const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER;
+
+const pageTitle = 'HPM É-SPACE Product Portfolio';
+const products = [
+  {
+    name: 'Hay Office Solo',
+    size: '6–10 m²',
+    price: '8–12k €',
+    desc: [
+      '1 workspace, panoramic window',
+      'Basic ventilation and electrical',
+      'Option for air conditioning / mini-split',
+    ],
+  },
+  {
+    name: 'Hay Studio Duo',
+    size: '12–18 m²',
+    price: '15–20k €',
+    desc: [
+      '2 workspaces, panoramic windows',
+      'Better ventilation and electrical system',
+      'Option for mini-AC unit',
+    ],
+  },
+  {
+    name: 'Nature Meeting Cube',
+    size: '18–25 m²',
+    price: '22–28k €',
+    desc: [
+      'Team meeting or seminar space',
+      'Advanced ventilation and electrical',
+      'Options for complex ventilation systems',
+    ],
+  },
+];
+---
+
+<PageLayout
+  title={pageTitle}
+  description="HPM É-SPACE - Prefabricated garden offices product portfolio"
+  lang="en"
+  pathname="/en/"
+  seoKeywords={['garden office', 'prefab', 'eco-friendly']}
+>
+  <HeroImage src={heroImage} alt="Hero image" />
+
+  {/* Product Sections */}
+  {products.map((product, idx) => (
+    <ProductSection
+      name={product.name}
+      size={product.size}
+      price={product.price}
+      description={product.desc}
+      reverse={idx % 2 === 1}
+    >
+      <img slot="image" src={`/assets/galleries/${idx + 1}/image.jpg`} alt={product.name} />
+    </ProductSection>
+  ))}
+
+  {/* Interior Inspiration Section */}
+  <section class="section-padding bg-wood text-cream">
+    <div class="container">
+      <h2 class="text-4xl font-bold mb-8">Interior Inspiration</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Gallery would go here */}
+      </div>
+    </div>
+  </section>
+
+  {/* Materials Section */}
+  <section class="section-padding bg-cream">
+    <div class="container">
+      <h2 class="text-4xl font-bold text-wood mb-4">Materials</h2>
+      <p class="text-gray-600">Placeholder: detailed materials info coming soon</p>
+    </div>
+  </section>
+
+  {/* Contact Form */}
+  <ContactForm lang="en" formspreeId={formspreeId} whatsappNumber={whatsappNumber} />
+</PageLayout>
