@@ -45,6 +45,14 @@ function sortFilenamesNumerically(filenames: string[]): string[] {
 }
 
 /**
+ * Generate unique hotspot IDs
+ * Example: generateHotspotId("podorys", 0) → "hotspot-podorys-0"
+ */
+function generateHotspotId(imageName: string, index: number): string {
+  return `hotspot-${imageName}-${index}`;
+}
+
+/**
  * Gallery component for displaying image collections
  *
  * Auto-discovers images from a folder using import.meta.glob() at build time.
