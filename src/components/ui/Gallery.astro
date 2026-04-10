@@ -159,20 +159,6 @@ if (folder) {
 const currentImage = images[0];
 const isEmpty = !currentImage;
 const isMultiple = images.length > 1;
-
-const renderImage = () => {
-  if (!currentImage) return null;
-  if (currentImage?.hotspots) {
-    return (
-      <HotspotImage
-        image={currentImage.src}
-        alt={currentImage.alt}
-        hotspots={currentImage.hotspots}
-      />
-    );
-  }
-  return <Image src={currentImage.src} alt={currentImage.alt} class="w-full h-auto" />;
-};
 ---
 
 <div class="gallery-container" data-gallery>
@@ -184,7 +170,15 @@ const renderImage = () => {
     <>
       {/* Main Image */}
       <div class="relative w-full">
-        {renderImage()}
+        {currentImage?.hotspots ? (
+          <HotspotImage
+            image={currentImage.src}
+            alt={currentImage.alt}
+            hotspots={currentImage.hotspots}
+          />
+        ) : (
+          <Image src={currentImage.src} alt={currentImage.alt} class="w-full h-auto" />
+        )}
       </div>
 
       {/* Thumbnail Strip */}
@@ -207,7 +201,15 @@ const renderImage = () => {
   ) : (
     <>
       {/* Single Image */}
-      {renderImage()}
+      {currentImage?.hotspots ? (
+        <HotspotImage
+          image={currentImage.src}
+          alt={currentImage.alt}
+          hotspots={currentImage.hotspots}
+        />
+      ) : (
+        <Image src={currentImage.src} alt={currentImage.alt} class="w-full h-auto" />
+      )}
     </>
   )}
 </div>
