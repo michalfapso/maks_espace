@@ -2,6 +2,8 @@
 // src/components/ui/Gallery.astro
 import { Image } from 'astro:assets';
 import HotspotImage from './HotspotImage.astro';
+import { parse as parseYaml } from 'yaml';
+import type { Hotspot } from './HotspotImage.astro';
 
 interface Props {
   folder: string; // e.g., 'src/assets/galleries/1'
@@ -53,6 +55,85 @@ function generateHotspotId(imageName: string, index: number): string {
 }
 
 /**
+ * Discover and load images from a folder using import.meta.glob()
+ * Returns array of ImageItem objects ready for rendering
+ */
+async function discoverImages(folderPath: string) {
+  // Resolve absolute path for glob pattern
+  // Example: "src/assets/galleries/1" → glob pattern for that folder
+  const imagePath = folderPath.replace(/^src\//, '');
+  const globPattern = `../../assets/${imagePath}/*.jpg`;
+
+  // Discover JPG files
+  const imageModules = import.meta.glob<{ default: any }>(
+    '../../assets/galleries/**/*.jpg',
+    { eager: true }
+  );
+
+  // Discover YAML files for hotspots
+  const yamlModules = import.meta.glob<string>(
+    '../../assets/galleries/**/*.yaml',
+    { eager: true, as: 'raw' }
+  );
+
+  // Filter images and YAML to matching folder
+  const folderName = folderPath.split('/').pop() || '';
+  const folderPattern = `../assets/galleries/${folderName}/`;
+
+  const matchingImages = Object.entries(imageModules)
+    .filter(([path]) => path.includes(folderName))
+    .map(([path, module]) => ({
+      path,
+      filename: path.split('/').pop() || '',
+      src: module.default
+    }));
+
+  // Create map of YAML data by image filename (without extension)
+  const yamlDataMap: Record<string, any> = {};
+  Object.entries(yamlModules)
+    .filter(([path]) => path.includes(folderName))
+    .forEach(([path, content]) => {
+      try {
+        const yamlFilename = path.split('/').pop() || '';
+        const imageFilename = yamlFilename.replace(/\.yaml$/, '');
+        yamlDataMap[imageFilename] = parseYaml(content);
+      } catch (error) {
+        console.warn(`Failed to parse YAML at ${path}:`, error);
+      }
+    });
+
+  // Sort images numerically
+  const sortedImages = sortFilenamesNumerically(
+    matchingImages.map(img => img.filename)
+  ).map(filename => matchingImages.find(img => img.filename === filename)!);
+
+  // Build ImageItem array with hotspots
+  const images = sortedImages.map((img, index) => {
+    const imageName = img.filename.replace(/\.[^/.]+$/, '');
+    const yamlData = yamlDataMap[imageName];
+
+    let hotspots: Hotspot[] = [];
+    if (yamlData?.hotspots && Array.isArray(yamlData.hotspots)) {
+      hotspots = yamlData.hotspots.map((hotspot: any, idx: number) => ({
+        id: generateHotspotId(imageName, idx),
+        label: hotspot.label || '',
+        x: hotspot.x || 0,
+        y: hotspot.y || 0,
+        href: hotspot.href
+      }));
+    }
+
+    return {
+      src: img.src,
+      alt: generateAltText(img.filename),
+      hotspots: hotspots.length > 0 ? hotspots : undefined
+    };
+  });
+
+  return images;
+}
+
+/**
  * Gallery component for displaying image collections
  *
  * Auto-discovers images from a folder using import.meta.glob() at build time.
@@ -69,9 +150,14 @@ function generateHotspotId(imageName: string, index: number): string {
 
 const { folder } = Astro.props;
 
-// Auto-discover images (simplified - production version would use import.meta.glob)
-// For now, pass images as children or define manually per page
-const images: ImageItem[] = [];
+let images: ImageItem[] = [];
+if (folder) {
+  try {
+    images = await discoverImages(folder);
+  } catch (error) {
+    console.error(`Failed to discover images in folder ${folder}:`, error);
+  }
+}
 
 const currentImage = images[0];
 const isEmpty = !currentImage;
