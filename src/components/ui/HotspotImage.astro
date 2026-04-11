@@ -110,6 +110,12 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         popup.style.top = y + 'px';
         popup.style.transform = 'translateX(-50%)';
         popup.classList.add('active');
+
+        // Add zoom to image
+        const img = container.querySelector('img');
+        if (img) {
+          img.classList.add('hotspot-zoom');
+        }
       });
     });
 
@@ -122,10 +128,24 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
       }
       // Close popup on any other click (inside or outside container)
       popup.classList.remove('active');
+
+      // Remove zoom from image
+      const img = container.querySelector('img');
+      if (img) {
+        img.classList.remove('hotspot-zoom');
+      }
     }, { signal: controller.signal });
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') popup.classList.remove('active');
+      if (e.key === 'Escape') {
+        popup.classList.remove('active');
+
+        // Remove zoom from image
+        const img = container.querySelector('img');
+        if (img) {
+          img.classList.remove('hotspot-zoom');
+        }
+      }
     }, { signal: controller.signal });
   });
 </script>
@@ -137,5 +157,11 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
 
   button[data-hotspot-id]:hover {
     filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+  }
+
+  [data-hotspot-image] > img.hotspot-zoom {
+    transform: scale(1.1);
+    transform-origin: center center;
+    transition: transform 0.3s ease;
   }
 </style>
