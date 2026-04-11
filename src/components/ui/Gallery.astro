@@ -178,7 +178,7 @@ const isMultiple = images.length > 1;
           <div data-image-index={idx} class={idx === 0 ? '' : 'hidden'}>
             <a
               href={img.lightboxSrc}
-              data-glightbox="gallery"
+              data-glightbox="type: image"
               class="inline-block w-full text-decoration-none cursor-pointer"
               style="all: inherit;"
             >
@@ -215,7 +215,7 @@ const isMultiple = images.length > 1;
       {images[0] && (
         <a
           href={images[0].lightboxSrc}
-          data-glightbox
+          data-glightbox="type: image"
           class="inline-block w-full text-decoration-none cursor-pointer"
           style="all: inherit;"
         >
@@ -234,84 +234,23 @@ const isMultiple = images.length > 1;
 <script src="https://cdn.jsdelivr.net/npm/glightbox"></script>
 
 <script is:inline>
-  console.log('Gallery script initializing...');
-
-  // Wait for DOM and GLightbox to be ready
   function initGallery() {
-    console.log('initGallery called');
-    console.log('GLightbox global:', typeof GLightbox, GLightbox);
+    GLightbox({ selector: '[data-glightbox]' });
 
-    // Initialize GLightbox with debug logging
-    const lightbox = GLightbox({
-      selector: '[data-glightbox]',
-      onOpen: () => console.log('GLightbox: onOpen event fired'),
-      onClose: () => console.log('GLightbox: onClose event fired'),
-    });
-    console.log('GLightbox initialized:', lightbox);
-    console.log('GLightbox version:', lightbox.version?.());
-
-    // Prevent default link behavior and let GLightbox handle it
-    const glightboxLinks = document.querySelectorAll('[data-glightbox]');
-    console.log('Found data-glightbox elements:', glightboxLinks.length);
-
-    // Preload all images as blob URLs for GLightbox
-    glightboxLinks.forEach((link, idx) => {
-      const href = link.getAttribute('href');
-      console.log(`Preloading glightbox image ${idx}: ${href}`);
-
-      fetch(href)
-        .then(r => r.blob())
-        .then(blob => {
-          console.log(`  Image ${idx} preloaded: ${blob.size} bytes`);
-          // Create a blob URL that GLightbox can actually load
-          const blobUrl = URL.createObjectURL(blob);
-          link.setAttribute('href', blobUrl);
-          link.setAttribute('data-blob-url', 'true');
-          console.log(`  Image ${idx} blob URL ready for GLightbox`);
-        })
-        .catch(e => console.error(`  Image ${idx} preload error:`, e.name, e.message));
-
-      link.addEventListener('click', (e) => {
-        console.log(`GLightbox link ${idx} clicked!`);
-        e.preventDefault();
-        console.log('  calling lightbox.open()');
-        lightbox.open(link);
-      });
-    });
-
-    // Thumbnail navigation - swap visible image and update styles
-    const galleries = document.querySelectorAll('[data-gallery-container]');
-    console.log('Found data-gallery-container elements:', galleries.length);
-
-    galleries.forEach((gallery, gIdx) => {
+    // Thumbnail navigation - swap visible image and update border styles
+    document.querySelectorAll('[data-gallery-container]').forEach((gallery) => {
       const mainImages = gallery.querySelector('[data-main-images]');
       const thumbnails = gallery.querySelectorAll('[data-thumbnail]');
 
-      console.log(`Gallery ${gIdx}: found ${thumbnails.length} thumbnails`);
-
       thumbnails.forEach((thumb, index) => {
-        console.log(`Attaching click handler to thumbnail ${index}`);
         thumb.addEventListener('click', () => {
-          console.log(`Thumbnail ${index} clicked!`);
-          // Update thumbnail border colors
           thumbnails.forEach((t, i) => {
-            if (i === index) {
-              t.classList.remove('border-wood');
-              t.classList.add('border-amber');
-            } else {
-              t.classList.add('border-wood');
-              t.classList.remove('border-amber');
-            }
+            t.classList.toggle('border-wood', i !== index);
+            t.classList.toggle('border-amber', i === index);
           });
-
-          // Show selected image, hide others
           if (mainImages) {
             mainImages.querySelectorAll('[data-image-index]').forEach((imgDiv, i) => {
-              if (i === index) {
-                imgDiv.classList.remove('hidden');
-              } else {
-                imgDiv.classList.add('hidden');
-              }
+              imgDiv.classList.toggle('hidden', i !== index);
             });
           }
         });
@@ -319,7 +258,6 @@ const isMultiple = images.length > 1;
     });
   }
 
-  // Run when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initGallery);
   } else {
