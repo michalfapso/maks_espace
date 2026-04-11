@@ -115,10 +115,17 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
 
     const controller = new AbortController();
 
-    document.addEventListener('click',
-      () => popup.classList.remove('active'),
-      { signal: controller.signal }
-    );
+    document.addEventListener('click', (e) => {
+      // Don't close popup if clicking on the popup content itself
+      if (popup.contains(e.target)) {
+        return;
+      }
+
+      // Close popup if clicking anywhere on the image container
+      if (container.contains(e.target)) {
+        popup.classList.remove('active');
+      }
+    }, { signal: controller.signal });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') popup.classList.remove('active');
