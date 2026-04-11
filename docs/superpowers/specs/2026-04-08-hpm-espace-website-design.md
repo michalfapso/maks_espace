@@ -128,23 +128,38 @@ Each file imports from the same shared component/layout and passes the appropria
     id: string,
     x: number (0–100, percentage),
     y: number (0–100, percentage),
-    label: string (merged label + description + price info in one field)
+    label: string (merged label + description + price info in one field),
+    href?: string (optional link for product cards)
   }
   ```
 
+**Hotspot Styling (High Contrast, Always Visible):**
+To maximize discoverability, hotspots use a three-layer design for high contrast against any background:
+- **Outer ring:** 1px solid white circle
+- **Middle ring:** ~10px black circle at 70% opacity
+- **Center:** 10px solid white circle
+
+This white-black-white sandwich provides maximum contrast visibility on typical product photography.
+
 **Behavior:**
 - Hotspot dots positioned absolutely using percentages (fully responsive)
-- **Hover:** CSS pulsing ring animation + dot scales up slightly
+- **Hover state:**
+  - Center white circle shrinks from 10px to 5px (making the black middle ring more visible)
+  - Middle black ring opacity increases from 70% to 90%
+  - Provides clear visual feedback that hotspot is interactive
 - **Click:** 
-  - Image scales to 1.1x and translates to center the clicked hotspot
   - Popup appears adjacent to hotspot (preferably above to avoid covering with finger on touch devices)
   - If not enough space above, popup intelligently repositions to left/right/bottom within image bounds
   - Popup background: semi-transparent with rounded corners
-  - Popup closes when clicking outside or pressing Escape
+  - **Popup closes when:**
+    - User clicks anywhere on the image (without opening lightbox)
+    - User presses Escape key
+  - When no popup is open, clicking the image opens the lightbox view
+  - Image zoom (1.1x, centered on hotspot) is planned for future enhancement
 - **Accessibility:** Keyboard navigation (Tab to hotspots, Enter/Space to activate)
 
 **Popup Content Rendering:**
-- If `label` contains a price marker (e.g., "Chair IDÅSEN, 199€"), render as styled product card
+- If `label` contains a price marker (e.g., "Chair IDÅSEN, 199€"), render as styled product card with link (if `href` provided)
 - Otherwise, render as plain text description
 
 **Lightbox Integration:**
@@ -534,6 +549,9 @@ This will be replaced with final material descriptions once finalized by the pro
 - [ ] Static build completes cleanly (`npm run build`)
 - [ ] All 3 languages accessible and correctly routed
 - [ ] HotspotImage component works on desktop and mobile (touch)
+- [ ] **Hotspot styling:** Visible at first glance with white-black-white layered design; visible even on busy backgrounds
+- [ ] **Hotspot hover state:** Center circle shrinks (10px → 5px) and middle ring darkens (70% → 90% opacity)
+- [ ] **Popup closing:** Clicking image closes popup without opening lightbox; Escape key also closes; clicking image when no popup shows lightbox
 - [ ] Lightbox opens/closes and navigates correctly
 - [ ] Hotspots remain interactive in lightbox view
 - [ ] Contact form submits to Formspree
