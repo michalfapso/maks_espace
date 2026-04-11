@@ -14,17 +14,32 @@ interface Props {
   image: ImageMetadata;
   alt: string;
   hotspots: Hotspot[];
+  overlayTop?: number;
+  overlayLeft?: number;
+  overlayHeight?: number;
+  overlayWidth?: number;
 }
 
-const { image, alt, hotspots } = Astro.props;
+const {
+  image,
+  alt,
+  hotspots,
+  overlayTop = 0,
+  overlayLeft = 0,
+  overlayHeight = 1,
+  overlayWidth = 1,
+} = Astro.props;
 const hasPrice = (label: string) => /€|\d+.*€/.test(label);
 ---
 
-<div class="relative w-full inline-block" data-hotspot-image>
-  <Image src={image} alt={alt} class="w-full h-auto" loading="lazy" />
+<div class="relative w-full h-full" data-hotspot-image>
+  <Image src={image} alt={alt} class="w-full h-full object-contain" loading="lazy" />
 
   {/* Hotspot Dots */}
-  <div class="absolute inset-0">
+  <div
+    class="absolute"
+    style={`top: ${overlayTop * 100}%; left: ${overlayLeft * 100}%; width: ${overlayWidth * 100}%; height: ${overlayHeight * 100}%;`}
+  >
     {hotspots.map(hotspot => (
       <button
         class="absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
