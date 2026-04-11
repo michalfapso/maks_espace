@@ -77,6 +77,13 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         e.preventDefault();
         e.stopPropagation();
 
+        // Debug: check the hotspot structure (Issue 3)
+        console.log('Hotspot clicked:', {
+          id: button.getAttribute('data-hotspot-id'),
+          children: button.children.length,
+          childClasses: Array.from(button.children).map(c => c.className),
+        });
+
         const label = button.getAttribute('data-hotspot-label') || '';
         const href = button.getAttribute('data-hotspot-href');
         const hasPrice = button.getAttribute('data-hotspot-price') === 'true';
@@ -117,11 +124,18 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         const hotspotCenterX = ((buttonRect.left - containerRect.left) / containerRect.width) * 100;
         const hotspotCenterY = ((buttonRect.top - containerRect.top) / containerRect.height) * 100;
 
-        // Apply zoom with hotspot as origin
+        // Apply zoom with hotspot as origin (Issue 2: also apply to hotspots overlay)
         const img = container.querySelector('img');
+        const hotspotsOverlay = container.querySelector('[class*="absolute"]'); // Gets the overlay div with hotspots
         if (img) {
           img.style.transformOrigin = `${hotspotCenterX}% ${hotspotCenterY}%`;
           img.classList.add('hotspot-zoom');
+        }
+        // Apply same zoom to hotspots container so they scale with image
+        if (hotspotsOverlay && hotspotsOverlay.firstChild) {
+          hotspotsOverlay.style.transform = `scale(1.1)`;
+          hotspotsOverlay.style.transformOrigin = `${hotspotCenterX}% ${hotspotCenterY}%`;
+          hotspotsOverlay.style.transition = 'transform 0.3s ease';
         }
       });
     });
@@ -129,21 +143,37 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
     const controller = new AbortController();
 
     document.addEventListener('click', (e) => {
+      const popupActive = popup.classList.contains('active');
+      // Debug: log click event flow (Issue 1)
+      console.log('Click event:', {
+        target: e.target.tagName,
+        popupActive,
+        popupContains: popup.contains(e.target),
+        containerContains: container.contains(e.target),
+      });
+
       // Don't close popup if clicking inside the popup
       if (popup.contains(e.target)) {
+        console.log('Click on popup content - staying open');
         return;
       }
       // Prevent lightbox from opening when closing popup
-      if (popup.classList.contains('active')) {
+      if (popupActive) {
+        console.log('Popup was active, stopping propagation to prevent lightbox');
         e.stopPropagation();
       }
       // Close popup on any other click (inside or outside container)
       popup.classList.remove('active');
 
-      // Remove zoom from image
+      // Remove zoom from image AND hotspots (Issue 2)
       const img = container.querySelector('img');
+      const hotspotsOverlay = container.querySelector('[class*="absolute"]');
       if (img) {
         img.classList.remove('hotspot-zoom');
+      }
+      if (hotspotsOverlay) {
+        hotspotsOverlay.style.transform = '';
+        hotspotsOverlay.style.transformOrigin = '';
       }
     }, { signal: controller.signal });
 
@@ -151,10 +181,15 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
       if (e.key === 'Escape') {
         popup.classList.remove('active');
 
-        // Remove zoom from image
+        // Remove zoom from image AND hotspots (Issue 2)
         const img = container.querySelector('img');
+        const hotspotsOverlay = container.querySelector('[class*="absolute"]');
         if (img) {
           img.classList.remove('hotspot-zoom');
+        }
+        if (hotspotsOverlay) {
+          hotspotsOverlay.style.transform = '';
+          hotspotsOverlay.style.transformOrigin = '';
         }
       }
     }, { signal: controller.signal });
