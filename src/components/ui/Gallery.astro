@@ -4,16 +4,21 @@ import { Image, getImage } from 'astro:assets';
 import HotspotImage from './HotspotImage.astro';
 import { parse as parseYaml } from 'yaml';
 import type { Hotspot } from './HotspotImage.astro';
+import { computeContainerAR, computeOverlay } from '../../utils/gallery';
 
 interface Props {
   folder: string; // e.g., 'src/assets/galleries/1'
 }
 
 interface ImageItem {
-  src: any;  // ImageMetadata, but avoid strict mode issue with component-wide any for now
+  src: any;
   alt: string;
-  hotspots?: Hotspot[];  // Array of Hotspot if available
-  lightboxSrc?: string;  // Optimized image URL for lightbox
+  hotspots?: Hotspot[];
+  lightboxSrc?: string;
+  overlayTop: number;
+  overlayLeft: number;
+  overlayHeight: number;
+  overlayWidth: number;
 }
 
 /**
@@ -59,7 +64,7 @@ function generateHotspotId(imageName: string, index: number): string {
  * Discover and load images from a folder using import.meta.glob()
  * Returns array of ImageItem objects ready for rendering
  */
-async function discoverImages(folderPath: string) {
+async function discoverImages(folderPath: string): Promise<{ images: ImageItem[], containerAR: number }> {
   // Discover JPG files
   const imageModules = import.meta.glob<{ default: any }>(
     '../../assets/galleries/**/*.jpg',
@@ -128,11 +133,23 @@ async function discoverImages(folderPath: string) {
       src: img.src,
       alt: generateAltText(img.filename),
       hotspots: hotspots.length > 0 ? hotspots : undefined,
-      lightboxSrc: optimized.src
+      lightboxSrc: optimized.src,
+      overlayTop: 0,
+      overlayLeft: 0,
+      overlayHeight: 1,
+      overlayWidth: 1
     };
   }));
 
-  return images;
+  const heightRatios = images.map(img => img.src.height / img.src.width);
+  const containerAR = computeContainerAR(heightRatios);
+
+  const imagesWithOverlay: ImageItem[] = images.map(img => {
+    const imageAR = img.src.width / img.src.height;
+    return { ...img, ...computeOverlay(imageAR, containerAR) };
+  });
+
+  return { images: imagesWithOverlay, containerAR };
 }
 
 /**
@@ -153,9 +170,10 @@ async function discoverImages(folderPath: string) {
 const { folder } = Astro.props;
 
 let images: ImageItem[] = [];
+let containerAR = 1;
 if (folder) {
   try {
-    images = await discoverImages(folder);
+    ({ images, containerAR } = await discoverImages(folder));
   } catch (error) {
     console.error(`Failed to discover images in folder ${folder}:`, error);
   }
@@ -173,19 +191,22 @@ const isMultiple = images.length > 1;
   ) : isMultiple ? (
     <>
       {/* Main Image Container - render all images, show based on selection */}
-      <div class="relative w-full" data-main-images>
+      <div class="relative w-full" data-main-images style={`aspect-ratio: ${containerAR};`}>
         {images.map((img, idx) => (
-          <div data-image-index={idx} class={idx === 0 ? '' : 'hidden'}>
+          <div data-image-index={idx} class={`w-full h-full ${idx === 0 ? '' : 'hidden'}`}>
             <a
               href={img.lightboxSrc}
               data-glightbox="type: image"
-              class="inline-block w-full text-decoration-none cursor-pointer"
               style="all: inherit;"
             >
               <HotspotImage
                 image={img.src}
                 alt={img.alt}
                 hotspots={img.hotspots || []}
+                overlayTop={img.overlayTop}
+                overlayLeft={img.overlayLeft}
+                overlayHeight={img.overlayHeight}
+                overlayWidth={img.overlayWidth}
               />
             </a>
           </div>
@@ -213,18 +234,23 @@ const isMultiple = images.length > 1;
     <>
       {/* Single Image */}
       {images[0] && (
-        <a
-          href={images[0].lightboxSrc}
-          data-glightbox="type: image"
-          class="inline-block w-full text-decoration-none cursor-pointer"
-          style="all: inherit;"
-        >
-          <HotspotImage
-            image={images[0].src}
-            alt={images[0].alt}
-            hotspots={images[0].hotspots || []}
-          />
-        </a>
+        <div class="relative w-full" style={`aspect-ratio: ${containerAR};`}>
+          <a
+            href={images[0].lightboxSrc}
+            data-glightbox="type: image"
+            style="all: inherit;"
+          >
+            <HotspotImage
+              image={images[0].src}
+              alt={images[0].alt}
+              hotspots={images[0].hotspots || []}
+              overlayTop={images[0].overlayTop}
+              overlayLeft={images[0].overlayLeft}
+              overlayHeight={images[0].overlayHeight}
+              overlayWidth={images[0].overlayWidth}
+            />
+          </a>
+        </div>
       )}
     </>
   )}
