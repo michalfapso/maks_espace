@@ -42,7 +42,7 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
   >
     {hotspots.map(hotspot => (
       <button
-        class="group absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+        class="group absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 cursor-pointer bg-transparent border-0 p-0"
         style={`left: ${hotspot.x}%; top: ${hotspot.y}%;`}
         data-hotspot-id={hotspot.id}
         data-hotspot-label={hotspot.label}
@@ -51,7 +51,7 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         aria-label={`Hotspot: ${hotspot.label}`}
       >
         {/* Outer white border layer */}
-        <span class="absolute inset-0 rounded-full border border-white"></span>
+        <span class="absolute inset-0 rounded-full border-2 border-white"></span>
         {/* Middle black background layer with hover opacity transition */}
         <span class="absolute inset-1 rounded-full bg-black/70 transition-opacity duration-200 group-hover:opacity-90"></span>
         {/* Inner white dot layer that shrinks on hover */}
@@ -111,9 +111,16 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         popup.style.transform = 'translateX(-50%)';
         popup.classList.add('active');
 
-        // Add zoom to image
+        // Calculate hotspot position as percentage of image (for transform-origin)
+        const containerRect = container.getBoundingClientRect();
+        const buttonRect = button.getBoundingClientRect();
+        const hotspotCenterX = ((buttonRect.left - containerRect.left) / containerRect.width) * 100;
+        const hotspotCenterY = ((buttonRect.top - containerRect.top) / containerRect.height) * 100;
+
+        // Apply zoom with hotspot as origin
         const img = container.querySelector('img');
         if (img) {
+          img.style.transformOrigin = `${hotspotCenterX}% ${hotspotCenterY}%`;
           img.classList.add('hotspot-zoom');
         }
       });
@@ -125,6 +132,10 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
       // Don't close popup if clicking inside the popup
       if (popup.contains(e.target)) {
         return;
+      }
+      // Prevent lightbox from opening when closing popup
+      if (popup.classList.contains('active')) {
+        e.stopPropagation();
       }
       // Close popup on any other click (inside or outside container)
       popup.classList.remove('active');
@@ -153,15 +164,22 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
 <style>
   button[data-hotspot-id] {
     transition: filter 0.15s ease;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    outline: none !important;
   }
 
   button[data-hotspot-id]:hover {
     filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
   }
 
+  button[data-hotspot-id]:focus {
+    outline: none;
+  }
+
   [data-hotspot-image] > img.hotspot-zoom {
     transform: scale(1.1);
-    transform-origin: center center;
     transition: transform 0.3s ease;
   }
 </style>
