@@ -1,6 +1,6 @@
 ---
 // src/components/ui/Gallery.astro
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import HotspotImage from './HotspotImage.astro';
 import { parse as parseYaml } from 'yaml';
 import type { Hotspot } from './HotspotImage.astro';
@@ -13,6 +13,7 @@ interface ImageItem {
   src: any;  // ImageMetadata, but avoid strict mode issue with component-wide any for now
   alt: string;
   hotspots?: Hotspot[];  // Array of Hotspot if available
+  lightboxSrc?: string;  // Optimized image URL for lightbox
 }
 
 /**
@@ -104,8 +105,8 @@ async function discoverImages(folderPath: string) {
     matchingImages.map(img => img.filename)
   ).map(filename => imageMap.get(filename)!);
 
-  // Build ImageItem array with hotspots
-  const images = sortedImages.map((img) => {
+  // Build ImageItem array with hotspots and optimized URLs for lightbox
+  const images = await Promise.all(sortedImages.map(async (img) => {
     const imageName = img.filename.replace(/\.[^/.]+$/, '');
     const yamlData = yamlDataMap[imageName];
 
@@ -120,12 +121,16 @@ async function discoverImages(folderPath: string) {
       }));
     }
 
+    // Get the optimized image using getImage()
+    const optimized = await getImage({ src: img.src });
+
     return {
       src: img.src,
       alt: generateAltText(img.filename),
-      hotspots: hotspots.length > 0 ? hotspots : undefined
+      hotspots: hotspots.length > 0 ? hotspots : undefined,
+      lightboxSrc: optimized.src
     };
-  });
+  }));
 
   return images;
 }
@@ -156,29 +161,35 @@ if (folder) {
   }
 }
 
-const currentImage = images[0];
-const isEmpty = !currentImage;
+const isEmpty = !images[0];
 const isMultiple = images.length > 1;
 ---
 
-<div class="gallery-container" data-gallery>
+<div class="gallery-container" data-gallery data-gallery-container>
   {isEmpty ? (
     <div class="flex items-center justify-center w-full bg-gray-100 rounded-lg p-8 min-h-64">
       <p class="text-gray-500 text-center">No images available in this gallery</p>
     </div>
   ) : isMultiple ? (
     <>
-      {/* Main Image */}
-      <div class="relative w-full">
-        {currentImage?.hotspots ? (
-          <HotspotImage
-            image={currentImage.src}
-            alt={currentImage.alt}
-            hotspots={currentImage.hotspots}
-          />
-        ) : (
-          <Image src={currentImage.src} alt={currentImage.alt} class="w-full h-auto" />
-        )}
+      {/* Main Image Container - render all images, show based on selection */}
+      <div class="relative w-full" data-main-images>
+        {images.map((img, idx) => (
+          <div data-image-index={idx} class={idx === 0 ? '' : 'hidden'}>
+            <a
+              href={img.lightboxSrc}
+              data-glightbox="gallery"
+              class="inline-block w-full text-decoration-none cursor-pointer"
+              style="all: inherit;"
+            >
+              <HotspotImage
+                image={img.src}
+                alt={img.alt}
+                hotspots={img.hotspots || []}
+              />
+            </a>
+          </div>
+        ))}
       </div>
 
       {/* Thumbnail Strip */}
@@ -201,35 +212,117 @@ const isMultiple = images.length > 1;
   ) : (
     <>
       {/* Single Image */}
-      {currentImage?.hotspots ? (
-        <HotspotImage
-          image={currentImage.src}
-          alt={currentImage.alt}
-          hotspots={currentImage.hotspots}
-        />
-      ) : (
-        <Image src={currentImage.src} alt={currentImage.alt} class="w-full h-auto" />
+      {images[0] && (
+        <a
+          href={images[0].lightboxSrc}
+          data-glightbox
+          class="inline-block w-full text-decoration-none cursor-pointer"
+          style="all: inherit;"
+        >
+          <HotspotImage
+            image={images[0].src}
+            alt={images[0].alt}
+            hotspots={images[0].hotspots || []}
+          />
+        </a>
       )}
     </>
   )}
 </div>
 
-<script>
-  // Thumbnail navigation
-  document.querySelectorAll('[data-gallery]').forEach(gallery => {
-    const thumbnails = gallery.querySelectorAll('[data-thumbnail]');
-    thumbnails.forEach((thumb, index) => {
-      thumb.addEventListener('click', () => {
-        thumbnails.forEach((t, i) => {
-          if (i === index) {
-            t.classList.remove('border-wood');
-            t.classList.add('border-amber');
-          } else {
-            t.classList.add('border-wood');
-            t.classList.remove('border-amber');
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+<script src="https://cdn.jsdelivr.net/npm/glightbox"></script>
+
+<script is:inline>
+  console.log('Gallery script initializing...');
+
+  // Wait for DOM and GLightbox to be ready
+  function initGallery() {
+    console.log('initGallery called');
+    console.log('GLightbox global:', typeof GLightbox, GLightbox);
+
+    // Initialize GLightbox with debug logging
+    const lightbox = GLightbox({
+      selector: '[data-glightbox]',
+      onOpen: () => console.log('GLightbox: onOpen event fired'),
+      onClose: () => console.log('GLightbox: onClose event fired'),
+    });
+    console.log('GLightbox initialized:', lightbox);
+    console.log('GLightbox version:', lightbox.version?.());
+
+    // Prevent default link behavior and let GLightbox handle it
+    const glightboxLinks = document.querySelectorAll('[data-glightbox]');
+    console.log('Found data-glightbox elements:', glightboxLinks.length);
+
+    // Preload all images as blob URLs for GLightbox
+    glightboxLinks.forEach((link, idx) => {
+      const href = link.getAttribute('href');
+      console.log(`Preloading glightbox image ${idx}: ${href}`);
+
+      fetch(href)
+        .then(r => r.blob())
+        .then(blob => {
+          console.log(`  Image ${idx} preloaded: ${blob.size} bytes`);
+          // Create a blob URL that GLightbox can actually load
+          const blobUrl = URL.createObjectURL(blob);
+          link.setAttribute('href', blobUrl);
+          link.setAttribute('data-blob-url', 'true');
+          console.log(`  Image ${idx} blob URL ready for GLightbox`);
+        })
+        .catch(e => console.error(`  Image ${idx} preload error:`, e.name, e.message));
+
+      link.addEventListener('click', (e) => {
+        console.log(`GLightbox link ${idx} clicked!`);
+        e.preventDefault();
+        console.log('  calling lightbox.open()');
+        lightbox.open(link);
+      });
+    });
+
+    // Thumbnail navigation - swap visible image and update styles
+    const galleries = document.querySelectorAll('[data-gallery-container]');
+    console.log('Found data-gallery-container elements:', galleries.length);
+
+    galleries.forEach((gallery, gIdx) => {
+      const mainImages = gallery.querySelector('[data-main-images]');
+      const thumbnails = gallery.querySelectorAll('[data-thumbnail]');
+
+      console.log(`Gallery ${gIdx}: found ${thumbnails.length} thumbnails`);
+
+      thumbnails.forEach((thumb, index) => {
+        console.log(`Attaching click handler to thumbnail ${index}`);
+        thumb.addEventListener('click', () => {
+          console.log(`Thumbnail ${index} clicked!`);
+          // Update thumbnail border colors
+          thumbnails.forEach((t, i) => {
+            if (i === index) {
+              t.classList.remove('border-wood');
+              t.classList.add('border-amber');
+            } else {
+              t.classList.add('border-wood');
+              t.classList.remove('border-amber');
+            }
+          });
+
+          // Show selected image, hide others
+          if (mainImages) {
+            mainImages.querySelectorAll('[data-image-index]').forEach((imgDiv, i) => {
+              if (i === index) {
+                imgDiv.classList.remove('hidden');
+              } else {
+                imgDiv.classList.add('hidden');
+              }
+            });
           }
         });
       });
     });
-  });
+  }
+
+  // Run when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGallery);
+  } else {
+    initGallery();
+  }
 </script>

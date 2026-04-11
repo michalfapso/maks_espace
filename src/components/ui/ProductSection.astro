@@ -14,7 +14,7 @@ const { name, size, price, description, reverse = false } = Astro.props;
 
 <section class="section-padding bg-white">
   <div class="container">
-    <div class={`grid grid-cols-1 md:grid-cols-2 gap-12 items-center ${reverse ? 'md:[&>:first-child]:order-2' : ''}`}>
+    <div class={`grid grid-cols-1 md:grid-cols-2 gap-12 items-start ${reverse ? 'md:[&>:first-child]:order-2' : ''}`}>
       {/* Image Slot */}
       <div>
         <slot name="image" />

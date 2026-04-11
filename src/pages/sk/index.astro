@@ -4,44 +4,13 @@ import PageLayout from '@layouts/PageLayout.astro';
 import HeroImage from '@components/ui/HeroImage.astro';
 import ProductSection from '@components/ui/ProductSection.astro';
 import ContactForm from '@components/ui/ContactForm.astro';
+import Gallery from '@components/ui/Gallery.astro';
 import heroImage from '@assets/img/hero.jpg';
 
 const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
 const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER;
 
 const pageTitle = 'Produktové portfólio HPM É-SPACE';
-const products = [
-  {
-    name: 'Hay Office Solo',
-    size: '6–10 m²',
-    price: '8–12 tis. €',
-    desc: [
-      '1 pracovné miesto, panoramatické okno',
-      'Základná ventilácia a elektrika',
-      'Možnosť inštalácie klimatizácie/mini-splitu',
-    ],
-  },
-  {
-    name: 'Hay Studio Duo',
-    size: '12–18 m²',
-    price: '15–20 tis. €',
-    desc: [
-      '2 pracovné miesta, panoramatické okná',
-      'Lepšia ventilácia a elektrická sústava',
-      'Možnosť mini-klimatizácie',
-    ],
-  },
-  {
-    name: 'Nature Meeting Cube',
-    size: '18–25 m²',
-    price: '22–28 tis. €',
-    desc: [
-      'Priestor pre stretnutia tímov alebo semináre',
-      'Výdajná ventilácia a elektrika',
-      'Možnosti pre komplexné ventilačné systémy',
-    ],
-  },
-];
 ---
 
 <PageLayout
@@ -54,17 +23,35 @@ const products = [
   <HeroImage src={heroImage} alt="Hero image" />
 
   {/* Product Sections */}
-  {products.map((product, idx) => (
-    <ProductSection
-      name={product.name}
-      size={product.size}
-      price={product.price}
-      description={product.desc}
-      reverse={idx % 2 === 1}
-    >
-      <img slot="image" src={`/assets/galleries/${idx + 1}/image.jpg`} alt={product.name} />
-    </ProductSection>
-  ))}
+  <ProductSection
+    name="Hay Office Solo"
+    size="6–10 m²"
+    price="8–12 tis. €"
+    description={['1 pracovné miesto, panoramatické okno', 'Základná ventilácia a elektrika', 'Možnosť inštalácie klimatizácie/mini-splitu']}
+    reverse={false}
+  >
+    <Gallery slot="image" folder="/assets/galleries/1" />
+  </ProductSection>
+
+  <ProductSection
+    name="Hay Studio Duo"
+    size="12–18 m²"
+    price="15–20 tis. €"
+    description={['2 pracovné miesta, panoramatické okná', 'Lepšia ventilácia a elektrická sústava', 'Možnosť mini-klimatizácie']}
+    reverse={true}
+  >
+    <Gallery slot="image" folder="/assets/galleries/2" />
+  </ProductSection>
+
+  <ProductSection
+    name="Nature Meeting Cube"
+    size="18–25 m²"
+    price="22–28 tis. €"
+    description={['Priestor pre stretnutia tímov alebo semináre', 'Výdajná ventilácia a elektrika', 'Možnosti pre komplexné ventilačné systémy']}
+    reverse={false}
+  >
+    <Gallery slot="image" folder="/assets/galleries/3" />
+  </ProductSection>
 
   {/* Interior Inspiration Section */}
   <section class="section-padding bg-wood text-cream">
