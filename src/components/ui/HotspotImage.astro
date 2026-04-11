@@ -125,3 +125,13 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
     }, { signal: controller.signal });
   });
 </script>
+
+<style>
+  button[data-hotspot-id] {
+    transition: filter 0.15s ease;
+  }
+
+  button[data-hotspot-id]:hover {
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+  }
+</style>
