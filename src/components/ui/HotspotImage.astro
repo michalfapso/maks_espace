@@ -53,9 +53,9 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         {/* Outer white border layer */}
         <span class="absolute inset-0 rounded-full border border-white"></span>
         {/* Middle black background layer with hover opacity transition */}
-        <span class="absolute inset-1 rounded-full bg-black/70 group-hover:opacity-90"></span>
+        <span class="absolute inset-1 rounded-full bg-black/70 transition-opacity duration-200 group-hover:opacity-90"></span>
         {/* Inner white dot layer that shrinks on hover */}
-        <span class="absolute inset-3 group-hover:inset-4 rounded-full bg-white"></span>
+        <span class="absolute inset-6 rounded-full bg-white transition-all duration-200 group-hover:inset-8"></span>
       </button>
     ))}
   </div>
