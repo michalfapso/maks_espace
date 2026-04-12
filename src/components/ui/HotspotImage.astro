@@ -32,7 +32,7 @@ const {
 const hasPrice = (label: string) => /€|\d+.*€/.test(label);
 ---
 
-<div class="relative w-full h-full" data-hotspot-image>
+<div class="relative w-full h-full overflow-hidden" data-hotspot-image>
   <Image src={image} alt={alt} class="w-full h-full object-contain" loading="lazy" />
 
   {/* Hotspot Dots */}
