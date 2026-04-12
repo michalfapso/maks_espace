@@ -113,22 +113,29 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         container.setAttribute('data-popup-open', 'true');
 
         // Calculate hotspot position as percentage of image (for transform-origin)
-        const containerRect = container.getBoundingClientRect();
-        const buttonRect = button.getBoundingClientRect();
-        const hotspotCenterX = ((buttonRect.left - containerRect.left) / containerRect.width) * 100;
-        const hotspotCenterY = ((buttonRect.top - containerRect.top) / containerRect.height) * 100;
-
-        // Apply zoom with hotspot as origin (Issue 2: also apply to hotspots overlay)
         const img = container.querySelector('img');
-        const hotspotsOverlay = container.querySelector('[class*="absolute"]'); // Gets the overlay div with hotspots
-        if (img) {
+        const hotspotsOverlay = container.querySelector('[class*="absolute"][style*="left"]'); // Hotspots overlay with positioning
+
+        if (img && hotspotsOverlay) {
+          const containerRect = container.getBoundingClientRect();
+          const buttonRect = button.getBoundingClientRect();
+          const overlayRect = hotspotsOverlay.getBoundingClientRect();
+
+          // Calculate transform-origin as percentage of the entire container (for image)
+          const hotspotCenterX = ((buttonRect.left - containerRect.left) / containerRect.width) * 100;
+          const hotspotCenterY = ((buttonRect.top - containerRect.top) / containerRect.height) * 100;
+
+          // Calculate transform-origin relative to overlay container (for hotspots)
+          const hotspotCenterXInOverlay = ((buttonRect.left - overlayRect.left) / overlayRect.width) * 100;
+          const hotspotCenterYInOverlay = ((buttonRect.top - overlayRect.top) / overlayRect.height) * 100;
+
+          // Apply zoom to image with origin at hotspot in container coordinates
           img.style.transformOrigin = `${hotspotCenterX}% ${hotspotCenterY}%`;
           img.classList.add('hotspot-zoom');
-        }
-        // Apply same zoom to hotspots container so they scale with image
-        if (hotspotsOverlay && hotspotsOverlay.firstChild) {
+
+          // Apply zoom to hotspots overlay with origin at hotspot in overlay coordinates
           hotspotsOverlay.style.transform = `scale(1.1)`;
-          hotspotsOverlay.style.transformOrigin = `${hotspotCenterX}% ${hotspotCenterY}%`;
+          hotspotsOverlay.style.transformOrigin = `${hotspotCenterXInOverlay}% ${hotspotCenterYInOverlay}%`;
           hotspotsOverlay.style.transition = 'transform 0.3s ease';
         }
       });
