@@ -34,6 +34,15 @@ export function getInvestorPath(lang: Lang): string {
   return investorPaths[lang];
 }
 
+export function getMaterialsPath(lang: Lang): string {
+  const materialsPaths: Record<Lang, string> = {
+    sk: '/sk/materialy/',
+    en: '/en/materials/',
+    cs: '/cs/materialy/',
+  };
+  return materialsPaths[lang];
+}
+
 export function getLangURL(pathname: string, lang: Lang): string {
   if (pathname.includes('investorov') || pathname.includes('investors') || pathname.includes('investory')) {
     return getInvestorPath(lang);

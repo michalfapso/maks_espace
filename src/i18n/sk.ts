@@ -4,6 +4,7 @@ import type { TranslationSet } from './types';
 const sk = {
   nav: {
     products: 'Produkty',
+    materials: 'Materiály',
     investors: 'Pre Investorov',
     selectLanguage: 'Vyber jazyk',
   },

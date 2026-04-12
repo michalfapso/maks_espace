@@ -1,6 +1,6 @@
 ---
 // src/components/layout/Navbar.astro
-import { t, LANG_META, type Lang, getProductsPath, getInvestorPath } from '@i18n/index';
+import { t, LANG_META, type Lang, getProductsPath, getInvestorPath, getMaterialsPath } from '@i18n/index';
 
 interface Props {
   lang: Lang;
@@ -9,6 +9,7 @@ interface Props {
 const { lang } = Astro.props;
 const i18n = t(lang);
 const productsUrl = getProductsPath(lang);
+const materialsUrl = getMaterialsPath(lang);
 const investorsUrl = getInvestorPath(lang);
 ---
 
@@ -28,6 +29,9 @@ const investorsUrl = getInvestorPath(lang);
     <div class="hidden md:flex items-center gap-8">
       <a href={productsUrl} class="hover:text-amber transition-colors">
         {i18n.nav.products}
+      </a>
+      <a href={materialsUrl} class="hover:text-amber transition-colors">
+        {i18n.nav.materials}
       </a>
       <a href={investorsUrl} class="hover:text-amber transition-colors">
         {i18n.nav.investors}
@@ -70,6 +74,13 @@ const investorsUrl = getInvestorPath(lang);
           data-mobile-menu-close
         >
           {i18n.nav.products}
+        </a>
+        <a
+          href={materialsUrl}
+          class="text-lg font-semibold hover:text-amber transition-colors"
+          data-mobile-menu-close
+        >
+          {i18n.nav.materials}
         </a>
         <a
           href={investorsUrl}
