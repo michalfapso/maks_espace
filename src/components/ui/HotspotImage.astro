@@ -51,11 +51,11 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         aria-label={`Hotspot: ${hotspot.label}`}
       >
         {/* Outer white border layer */}
-        <span class="absolute inset-0 rounded-full border-2 border-white"></span>
+        <span></span>
         {/* Middle black background layer with hover opacity transition */}
-        <span class="absolute inset-1 rounded-full bg-black/70 transition-opacity duration-200 group-hover:opacity-90"></span>
+        <span></span>
         {/* Inner white dot layer that shrinks on hover */}
-        <span class="absolute inset-6 rounded-full bg-white transition-all duration-200 group-hover:inset-8"></span>
+        <span></span>
       </button>
     ))}
   </div>
@@ -141,6 +141,19 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
       });
     });
 
+    // Prevent lightbox from opening when popup is active (Issue 2 Fix)
+    const img = container.querySelector('img');
+    if (img) {
+      img.addEventListener('click', (e) => {
+        if (popup.classList.contains('active')) {
+          console.log('Popup is active, preventing lightbox');
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      }, true); // Capture phase to intercept before other handlers
+    }
+
     const controller = new AbortController();
 
     document.addEventListener('click', (e) => {
@@ -218,36 +231,36 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
 
   /* Outer white border layer */
   button[data-hotspot-id] > span:nth-child(1) {
-    position: absolute;
-    inset: 0;
-    border-radius: 9999px;
-    border: 2px solid white;
+    position: absolute !important;
+    inset: 0 !important;
+    border-radius: 9999px !important;
+    border: 2px solid white !important;
   }
 
   /* Middle black circle at 70% opacity */
   button[data-hotspot-id] > span:nth-child(2) {
-    position: absolute;
-    inset: 4px;
-    border-radius: 9999px;
-    background-color: rgba(0, 0, 0, 0.7);
-    transition: opacity 0.2s;
+    position: absolute !important;
+    inset: 4px !important;
+    border-radius: 9999px !important;
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    transition: opacity 0.2s !important;
   }
 
   button[data-hotspot-id]:hover > span:nth-child(2) {
-    opacity: 0.9;
+    opacity: 0.9 !important;
   }
 
   /* Inner white dot layer that shrinks on hover */
   button[data-hotspot-id] > span:nth-child(3) {
-    position: absolute;
-    inset: 24px;
-    border-radius: 9999px;
-    background-color: white;
-    transition: inset 0.2s;
+    position: absolute !important;
+    inset: 24px !important;
+    border-radius: 9999px !important;
+    background-color: white !important;
+    transition: inset 0.2s !important;
   }
 
   button[data-hotspot-id]:hover > span:nth-child(3) {
-    inset: 20px;
+    inset: 20px !important;
   }
 
   [data-hotspot-image] > img.hotspot-zoom {
