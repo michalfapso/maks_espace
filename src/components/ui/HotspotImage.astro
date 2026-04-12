@@ -50,12 +50,12 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         data-hotspot-price={hasPrice(hotspot.label) ? 'true' : 'false'}
         aria-label={`Hotspot: ${hotspot.label}`}
       >
-        {/* Outer white border layer */}
-        <span></span>
-        {/* Middle black background layer with hover opacity transition */}
-        <span></span>
-        {/* Inner white dot layer that shrinks on hover */}
-        <span></span>
+        {/* Outer white border layer: fills entire button */}
+        <span style="position: absolute; inset: 0; border-radius: 9999px; border: 2px solid white;"></span>
+        {/* Middle black background layer: ~8% inset (2px of 24px button) */}
+        <span style="position: absolute; inset: 8%; border-radius: 9999px; background-color: rgba(0, 0, 0, 0.7); transition: opacity 0.2s;"></span>
+        {/* Inner white dot layer: 50% inset at rest, shrinks to 42% on hover */}
+        <span style="position: absolute; inset: 50%; border-radius: 9999px; background-color: white; transition: inset 0.2s;"></span>
       </button>
     ))}
   </div>
@@ -213,6 +213,7 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
 </script>
 
 <style>
+  /* Button base styling */
   button[data-hotspot-id] {
     transition: filter 0.15s ease;
     background: transparent !important;
@@ -221,6 +222,13 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
     outline: none !important;
   }
 
+  /* Remove unwanted pseudo-elements */
+  button[data-hotspot-id]::after,
+  button[data-hotspot-id]::before {
+    display: none !important;
+  }
+
+  /* Button hover glow effect */
   button[data-hotspot-id]:hover {
     filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
   }
@@ -229,40 +237,16 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
     outline: none;
   }
 
-  /* Outer white border layer */
-  button[data-hotspot-id] > span:nth-child(1) {
-    position: absolute !important;
-    inset: 0 !important;
-    border-radius: 9999px !important;
-    border: 2px solid white !important;
-  }
-
-  /* Middle black circle at 70% opacity */
-  button[data-hotspot-id] > span:nth-child(2) {
-    position: absolute !important;
-    inset: 4px !important;
-    border-radius: 9999px !important;
-    background-color: rgba(0, 0, 0, 0.7) !important;
-    transition: opacity 0.2s !important;
-  }
-
+  /* Hover states for the three span layers (inline styles provide base styling) */
   button[data-hotspot-id]:hover > span:nth-child(2) {
-    opacity: 0.9 !important;
-  }
-
-  /* Inner white dot layer that shrinks on hover */
-  button[data-hotspot-id] > span:nth-child(3) {
-    position: absolute !important;
-    inset: 24px !important;
-    border-radius: 9999px !important;
-    background-color: white !important;
-    transition: inset 0.2s !important;
+    opacity: 0.9;
   }
 
   button[data-hotspot-id]:hover > span:nth-child(3) {
-    inset: 20px !important;
+    inset: 42%;
   }
 
+  /* Image zoom effect */
   [data-hotspot-image] > img.hotspot-zoom {
     transform: scale(1.1);
     transition: transform 0.3s ease;
