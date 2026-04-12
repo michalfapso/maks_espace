@@ -52,10 +52,10 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
       >
         {/* Outer white border layer: fills entire button */}
         <span style="position: absolute; inset: 0; border-radius: 9999px; border: 2px solid white;"></span>
-        {/* Middle black background layer: ~8% inset (2px of 24px button) */}
+        {/* Middle black background layer: ~8% inset (2px of 24px button, ~83% of parent size) */}
         <span style="position: absolute; inset: 8%; border-radius: 9999px; background-color: rgba(0, 0, 0, 0.7); transition: opacity 0.2s;"></span>
-        {/* Inner white dot layer: 50% inset at rest, shrinks to 42% on hover */}
-        <span style="position: absolute; inset: 50%; border-radius: 9999px; background-color: white; transition: inset 0.2s;"></span>
+        {/* Inner white dot layer: 24% inset at rest (~50% of parent), shrinks to 33% on hover (~33% of parent) */}
+        <span style="position: absolute; inset: 24%; border-radius: 9999px; background-color: white; transition: inset 0.2s;"></span>
       </button>
     ))}
   </div>
@@ -243,7 +243,7 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
   }
 
   button[data-hotspot-id]:hover > span:nth-child(3) {
-    inset: 42%;
+    inset: 33%;
   }
 
   /* Image zoom effect */
