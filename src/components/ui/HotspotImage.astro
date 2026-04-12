@@ -160,15 +160,20 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         popup.classList.remove('active');
         container.removeAttribute('data-popup-open');
 
-        // Remove zoom from image AND hotspots
+        // Animate zoom out smoothly
         const img = container.querySelector('img');
-        const hotspotsOverlay = container.querySelector('[class*="absolute"]');
+        const hotspotsOverlay = container.querySelector('[class*="absolute"][style*="left"]');
         if (img) {
           img.classList.remove('hotspot-zoom');
+          // Trigger reflow to ensure animation plays
+          void img.offsetHeight;
         }
         if (hotspotsOverlay) {
-          hotspotsOverlay.style.transform = '';
-          hotspotsOverlay.style.transformOrigin = '';
+          hotspotsOverlay.style.transform = 'scale(1)';
+          // Clear transformOrigin after animation completes
+          setTimeout(() => {
+            hotspotsOverlay.style.transformOrigin = '';
+          }, 300);
         }
       }
     }, { signal: controller.signal });
@@ -178,15 +183,20 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         popup.classList.remove('active');
         container.removeAttribute('data-popup-open');
 
-        // Remove zoom from image AND hotspots (Issue 2)
+        // Animate zoom out smoothly (Issue 2)
         const img = container.querySelector('img');
-        const hotspotsOverlay = container.querySelector('[class*="absolute"]');
+        const hotspotsOverlay = container.querySelector('[class*="absolute"][style*="left"]');
         if (img) {
           img.classList.remove('hotspot-zoom');
+          // Trigger reflow to ensure animation plays
+          void img.offsetHeight;
         }
         if (hotspotsOverlay) {
-          hotspotsOverlay.style.transform = '';
-          hotspotsOverlay.style.transformOrigin = '';
+          hotspotsOverlay.style.transform = 'scale(1)';
+          // Clear transformOrigin after animation completes
+          setTimeout(() => {
+            hotspotsOverlay.style.transformOrigin = '';
+          }, 300);
         }
       }
     }, { signal: controller.signal });
