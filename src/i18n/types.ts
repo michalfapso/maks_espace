@@ -2,6 +2,7 @@
 export interface TranslationSet {
   nav: {
     products: string;
+    materials: string;
     investors: string;
     selectLanguage?: string;
   };
