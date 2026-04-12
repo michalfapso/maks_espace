@@ -171,24 +171,36 @@
   }
 
   /* Popup Styles */
-  [data-hotspot-popup] {
+  [data-hotspot-popup-id] {
     position: absolute;
-    opacity: 0 !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    transition: opacity 200ms ease;
+    pointer-events: none;
     z-index: 20;
+    opacity: 0;
+    transition: opacity 500ms ease-in-out;
   }
 
-  [data-hotspot-popup][class*="active"],
-  [data-hotspot-popup].active {
-    opacity: 1 !important;
-    visibility: visible !important;
-    pointer-events: auto !important;
+  /* Show popup when it has opacity-100 class */
+  [data-hotspot-popup-id].opacity-100 {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   [data-popup-content] {
     @apply bg-white/95 backdrop-blur rounded-lg shadow-xl p-4 max-w-xs;
+  }
+
+  /* Lightbox Popup Styles */
+  [data-lightbox-popup] {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 500ms ease-in-out;
+  }
+
+  [data-lightbox-popup].opacity-100 {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   /* Lightbox (GLightbox) */

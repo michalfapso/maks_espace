@@ -329,17 +329,20 @@ const isMultiple = images.length > 1;
           const href = button.getAttribute('data-hotspot-href');
           const hasPrice = button.getAttribute('data-hotspot-price') === 'true';
 
-          // Remove existing popups for this button
-          clonedOverlay.querySelectorAll('[data-lightbox-popup]').forEach(p => p.remove());
+          // Fade out and remove existing popups
+          clonedOverlay.querySelectorAll('[data-lightbox-popup]').forEach(p => {
+            p.classList.remove('opacity-100');
+            // Remove after fade out completes
+            setTimeout(() => p.remove(), 500);
+          });
 
           // Create popup
           const popup = document.createElement('div');
           popup.setAttribute('data-lightbox-popup', 'true');
-          popup.className = 'absolute bg-white/95 backdrop-blur rounded-lg shadow-xl p-4 max-w-xs pointer-events-auto';
+          popup.className = 'bg-white/95 backdrop-blur rounded-lg shadow-xl p-4 max-w-xs';
           popup.style.left = button.offsetLeft + 'px';
           popup.style.top = (button.offsetTop - 100) + 'px';
           popup.style.transform = 'translateX(-50%)';
-          popup.style.zIndex = '1000';
 
           // Create content
           let content;
@@ -362,10 +365,17 @@ const isMultiple = images.length > 1;
           popup.appendChild(content);
           clonedOverlay.appendChild(popup);
 
+          // Fade in with animation
+          // Use setTimeout to ensure browser paints the initial opacity:0 state first
+          setTimeout(() => {
+            popup.classList.add('opacity-100');
+          }, 10);
+
           // Close on outside click
           const closeHandler = (e) => {
             if (!popup.contains(e.target) && !button.contains(e.target)) {
-              popup.remove();
+              popup.classList.remove('opacity-100');
+              setTimeout(() => popup.remove(), 500);
               document.removeEventListener('click', closeHandler);
             }
           };
