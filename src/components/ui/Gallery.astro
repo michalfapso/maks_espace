@@ -263,6 +263,19 @@ const isMultiple = images.length > 1;
   function initGallery() {
     GLightbox({ selector: '[data-glightbox]' });
 
+    // Prevent lightbox from opening when a hotspot popup is active
+    document.querySelectorAll('[data-glightbox]').forEach(glightboxLink => {
+      glightboxLink.addEventListener('click', (e) => {
+        // Find the parent hotspot container
+        const hotspotContainer = glightboxLink.closest('[data-hotspot-image]');
+        if (hotspotContainer && hotspotContainer.hasAttribute('data-popup-open')) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        }
+      }, true); // Use capture phase to intercept before GLightbox
+    });
+
     // Thumbnail navigation - swap visible image and update border styles
     document.querySelectorAll('[data-gallery-container]').forEach((gallery) => {
       const mainImages = gallery.querySelector('[data-main-images]');

@@ -117,6 +117,7 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         popup.style.top = y + 'px';
         popup.style.transform = 'translateX(-50%)';
         popup.classList.add('active');
+        container.setAttribute('data-popup-open', 'true');
 
         // Calculate hotspot position as percentage of image (for transform-origin)
         const containerRect = container.getBoundingClientRect();
@@ -164,6 +165,7 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
       }
       // Close popup on any other click (inside or outside container)
       popup.classList.remove('active');
+      container.removeAttribute('data-popup-open');
 
       // Remove zoom from image AND hotspots (Issue 2)
       const img = container.querySelector('img');
@@ -180,6 +182,7 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         popup.classList.remove('active');
+        container.removeAttribute('data-popup-open');
 
         // Remove zoom from image AND hotspots (Issue 2)
         const img = container.querySelector('img');
@@ -211,6 +214,40 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
 
   button[data-hotspot-id]:focus {
     outline: none;
+  }
+
+  /* Outer white border layer */
+  button[data-hotspot-id] > span:nth-child(1) {
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    border: 2px solid white;
+  }
+
+  /* Middle black circle at 70% opacity */
+  button[data-hotspot-id] > span:nth-child(2) {
+    position: absolute;
+    inset: 4px;
+    border-radius: 9999px;
+    background-color: rgba(0, 0, 0, 0.7);
+    transition: opacity 0.2s;
+  }
+
+  button[data-hotspot-id]:hover > span:nth-child(2) {
+    opacity: 0.9;
+  }
+
+  /* Inner white dot layer that shrinks on hover */
+  button[data-hotspot-id] > span:nth-child(3) {
+    position: absolute;
+    inset: 24px;
+    border-radius: 9999px;
+    background-color: white;
+    transition: inset 0.2s;
+  }
+
+  button[data-hotspot-id]:hover > span:nth-child(3) {
+    inset: 20px;
   }
 
   [data-hotspot-image] > img.hotspot-zoom {
