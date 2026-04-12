@@ -11,38 +11,6 @@ const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID;
 const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER;
 
 const pageTitle = 'HPM É-SPACE Product Portfolio';
-const products = [
-  {
-    name: 'Hay Office Solo',
-    size: '6–10 m²',
-    price: '8–12k €',
-    desc: [
-      '1 workspace, panoramic window',
-      'Basic ventilation and electrical',
-      'Option for air conditioning / mini-split',
-    ],
-  },
-  {
-    name: 'Hay Studio Duo',
-    size: '12–18 m²',
-    price: '15–20k €',
-    desc: [
-      '2 workspaces, panoramic windows',
-      'Better ventilation and electrical system',
-      'Option for mini-AC unit',
-    ],
-  },
-  {
-    name: 'Nature Meeting Cube',
-    size: '18–25 m²',
-    price: '22–28k €',
-    desc: [
-      'Team meeting or seminar space',
-      'Advanced ventilation and electrical',
-      'Options for complex ventilation systems',
-    ],
-  },
-];
 ---
 
 <PageLayout
@@ -55,17 +23,35 @@ const products = [
   <HeroImage src={heroImage} alt="Hero image" />
 
   {/* Product Sections */}
-  {products.map((product, idx) => (
-    <ProductSection
-      name={product.name}
-      size={product.size}
-      price={product.price}
-      description={product.desc}
-      reverse={idx % 2 === 1}
-    >
-      <Gallery slot="image" folder={`/assets/galleries/${idx + 1}`} />
-    </ProductSection>
-  ))}
+  <ProductSection
+    name="Hay Office Solo"
+    size="6–10 m²"
+    price="8–12k €"
+    description={['1 workspace, panoramic window', 'Basic ventilation and electrical', 'Option for air conditioning / mini-split']}
+    reverse={false}
+  >
+    <Gallery slot="image" folder="/assets/galleries/1" />
+  </ProductSection>
+
+  <ProductSection
+    name="Hay Studio Duo"
+    size="12–18 m²"
+    price="15–20k €"
+    description={['2 workspaces, panoramic windows', 'Better ventilation and electrical system', 'Option for mini-AC unit']}
+    reverse={true}
+  >
+    <Gallery slot="image" folder="/assets/galleries/2" />
+  </ProductSection>
+
+  <ProductSection
+    name="Nature Meeting Cube"
+    size="18–25 m²"
+    price="22–28k €"
+    description={['Team meeting or seminar space', 'Advanced ventilation and electrical', 'Options for complex ventilation systems']}
+    reverse={false}
+  >
+    <Gallery slot="image" folder="/assets/galleries/3" />
+  </ProductSection>
 
   {/* Interior Inspiration Section */}
   <section class="section-padding bg-wood text-cream">
