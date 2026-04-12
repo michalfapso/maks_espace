@@ -1,0 +1,225 @@
+---
+import PageLayout from '@layouts/PageLayout.astro';
+
+const title = "Materiály";
+const description = "Bio-based wall system technology and specifications";
+const seoKeywords = ["bio-based walls", "hemp-lime", "sustainable building", "thermal performance"];
+const lang = "cs";
+const pathname = "/cs/materialy/";
+---
+
+<PageLayout
+  title={title}
+  description={description}
+  lang={lang}
+  pathname={pathname}
+  seoKeywords={seoKeywords}
+>
+  <!-- Section 1: System Overview -->
+  <section id="overview" class="section-padding bg-white">
+    <div class="container">
+      <h1 class="text-5xl md:text-6xl font-bold text-wood mb-6">Bio-Based Wall System</h1>
+      <p class="text-lg leading-relaxed text-gray-700 mb-8">
+        A fully bio-based, vapour-open wall construction that combines excellent
+        thermal performance with healthy indoor climate and natural durability.
+      </p>
+      <img
+        src="/assets/galleries/materials/material.jpg"
+        alt="Bio-based wall system overview"
+        class="w-full rounded-lg mb-8"
+      />
+    </div>
+  </section>
+
+  <!-- Section 2: Composition & Layers -->
+  <section id="layers" class="section-padding bg-cream">
+    <div class="container">
+      <h2 class="text-4xl md:text-5xl font-bold text-wood mb-6">Composition & Layer Build-up</h2>
+      <p class="text-lg leading-relaxed text-gray-700 mb-8">
+        The wall is constructed from multiple layers, each chosen for specific
+        performance characteristics. From inside to outside:
+      </p>
+
+      <div class="space-y-8 mb-8">
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Interior Finish – Strawboard Panel (30 mm)</h3>
+          <p class="leading-relaxed text-gray-700">
+            A rigid board made from compressed straw fibres. It provides a smooth
+            interior surface, adds thermal insulation and acts as a moisture-buffering
+            layer. Typical thermal conductivity: ~0.09 W/m·K.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Insulation – Hemp-Lime (160 mm)</h3>
+          <p class="leading-relaxed text-gray-700">
+            The main insulating layer of cast or sprayed hemp shiv and lime binder.
+            Low thermal conductivity (~0.07 W/m·K) forms a continuous layer around
+            timber studs, reducing thermal bridges. High thermal mass and moisture
+            buffering stabilise indoor temperature and humidity.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Timber Frame – Structural Studs (160 mm)</h3>
+          <p class="leading-relaxed text-gray-700">
+            Standard softwood frame carrying structural loads. Cavities between
+            studs are completely filled with hemp-lime, integrating the structure
+            into the insulation zone.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Vapour-Permeable Membrane</h3>
+          <p class="leading-relaxed text-gray-700">
+            On the cold side of the insulation, this membrane protects the wall
+            from wind and external moisture while allowing water vapour to move
+            through the assembly for drying in both directions.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Counter Battens – 25×50 mm</h3>
+          <p class="leading-relaxed text-gray-700">
+            Timber battens create a ventilated cavity between membrane and outer
+            cladding, allowing moisture evaporation and improving facade durability.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Ventilated Air Cavity (25 mm)</h3>
+          <p class="leading-relaxed text-gray-700">
+            A continuous, ventilated air space drains water and equalises pressure,
+            further protecting the wall from driving rain.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Façade Cladding – Charred Wood (20 mm, Shou Sugi Ban)</h3>
+          <p class="leading-relaxed text-gray-700">
+            External finish of charred wood boards using the traditional Shou Sugi
+            Ban technique. The charred surface provides a deep appearance, improves
+            weather resistance and durability without synthetic coatings. Thermal
+            conductivity: ~0.13–0.15 W/m·K.
+          </p>
+        </div>
+      </div>
+
+      <img
+        src="/assets/galleries/materials/material.jpg"
+        alt="Wall system cross-section showing all layers"
+        class="w-full rounded-lg mb-8"
+      />
+    </div>
+  </section>
+
+  <!-- Section 3: Thermal Performance -->
+  <section id="performance" class="section-padding bg-white">
+    <div class="container">
+      <h2 class="text-4xl md:text-5xl font-bold text-wood mb-6">Thermal Performance</h2>
+      <p class="text-lg leading-relaxed text-gray-700 mb-8">
+        Based on the indicated layer thicknesses and material properties, the wall
+        achieves excellent insulation performance suitable for low-energy buildings.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div class="bg-gray-100 p-8 rounded-lg">
+          <h3 class="text-2xl font-bold text-wood mb-4">Thermal Resistance (R-value)</h3>
+          <p class="text-3xl font-bold text-amber mb-4">R ≈ 4.1 m²K/W</p>
+          <p class="leading-relaxed text-gray-700">
+            A higher R-value means better insulation. This value indicates excellent
+            thermal resistance compared to standard constructions.
+          </p>
+        </div>
+
+        <div class="bg-gray-100 p-8 rounded-lg">
+          <h3 class="text-2xl font-bold text-wood mb-4">Thermal Transmittance (U-value)</h3>
+          <p class="text-3xl font-bold text-amber mb-4">U ≈ 0.24 W/m²K</p>
+          <p class="leading-relaxed text-gray-700">
+            A lower U-value means less heat loss through the wall. This very good
+            insulation performance reduces heating and cooling demands significantly,
+            especially under Central European climate conditions.
+          </p>
+        </div>
+      </div>
+
+      <img
+        src="/assets/galleries/materials/material.jpg"
+        alt="Thermal performance specifications"
+        class="w-full rounded-lg mb-8"
+      />
+    </div>
+  </section>
+
+  <!-- Section 4: Key Benefits Summary -->
+  <section id="benefits" class="section-padding bg-cream">
+    <div class="container">
+      <h2 class="text-4xl md:text-5xl font-bold text-wood mb-6">Key Benefits</h2>
+
+      <div class="space-y-8 mb-8">
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Energy Efficient</h3>
+          <p class="leading-relaxed text-gray-700">
+            With a U-value of approximately 0.24 W/m²K, this wall significantly
+            reduces heating and cooling demands compared to standard constructions,
+            lowering operational energy costs.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Healthy and Vapour-Open</h3>
+          <p class="leading-relaxed text-gray-700">
+            All main layers—strawboard, hemp-lime, membrane, timber, and charred
+            wood—are vapour-permeable, allowing the wall to naturally regulate indoor
+            humidity and prevent trapped moisture that can cause health issues.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Low-Carbon and Natural</h3>
+          <p class="leading-relaxed text-gray-700">
+            Plant-based materials (straw, hemp, timber) and lime binder have
+            significantly lower embodied CO₂ than conventional mineral wool and
+            concrete systems, supporting sustainable building goals.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Durable Façade</h3>
+          <p class="leading-relaxed text-gray-700">
+            The charred wood cladding provides long-lasting weather protection while
+            maintaining a natural, refined appearance without synthetic coatings that
+            require maintenance or replacement.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Comfortable Indoor Climate</h3>
+          <p class="leading-relaxed text-gray-700">
+            Hemp-lime and strawboard combine insulation with thermal mass and
+            moisture buffering, resulting in stable indoor temperatures, reduced
+            overheating risk, and naturally comfortable humidity levels year-round.
+          </p>
+        </div>
+      </div>
+
+      <img
+        src="/assets/galleries/materials/material.jpg"
+        alt="Benefits of the bio-based wall system"
+        class="w-full rounded-lg mb-8"
+      />
+    </div>
+  </section>
+
+  <!-- Section 5: Engagement/Next Steps -->
+  <section id="next-steps" class="section-padding bg-white">
+    <div class="container">
+      <h2 class="text-4xl md:text-5xl font-bold text-wood mb-6">Ready to Learn More?</h2>
+      <p class="text-lg leading-relaxed text-gray-700">
+        If you're interested in how this wall system could work for your project,
+        we'd love to discuss it further. Please get in touch using the contact form
+        below.
+      </p>
+    </div>
+  </section>
+</PageLayout>
