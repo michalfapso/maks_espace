@@ -109,35 +109,9 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         popup.style.left = x + 'px';
         popup.style.top = y + 'px';
         popup.style.transform = 'translateX(-50%)';
+
         popup.classList.add('active');
         container.setAttribute('data-popup-open', 'true');
-
-        // Calculate hotspot position as percentage of image (for transform-origin)
-        const img = container.querySelector('img');
-        const hotspotsOverlay = container.querySelector('[class*="absolute"][style*="left"]'); // Hotspots overlay with positioning
-
-        if (img && hotspotsOverlay) {
-          const containerRect = container.getBoundingClientRect();
-          const buttonRect = button.getBoundingClientRect();
-          const overlayRect = hotspotsOverlay.getBoundingClientRect();
-
-          // Calculate transform-origin as percentage of the entire container (for image)
-          const hotspotCenterX = ((buttonRect.left - containerRect.left) / containerRect.width) * 100;
-          const hotspotCenterY = ((buttonRect.top - containerRect.top) / containerRect.height) * 100;
-
-          // Calculate transform-origin relative to overlay container (for hotspots)
-          const hotspotCenterXInOverlay = ((buttonRect.left - overlayRect.left) / overlayRect.width) * 100;
-          const hotspotCenterYInOverlay = ((buttonRect.top - overlayRect.top) / overlayRect.height) * 100;
-
-          // Apply zoom to image with origin at hotspot in container coordinates
-          img.style.transformOrigin = `${hotspotCenterX}% ${hotspotCenterY}%`;
-          img.classList.add('hotspot-zoom');
-
-          // Apply zoom to hotspots overlay with origin at hotspot in overlay coordinates
-          hotspotsOverlay.style.transform = `scale(1.1)`;
-          hotspotsOverlay.style.transformOrigin = `${hotspotCenterXInOverlay}% ${hotspotCenterYInOverlay}%`;
-          hotspotsOverlay.style.transition = 'transform 0.3s ease';
-        }
       });
     });
 
@@ -145,59 +119,20 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
     const controller = new AbortController();
 
     document.addEventListener('click', (e) => {
-      const popupActive = popup.classList.contains('active');
+      if (popup.contains(e.target)) return;
 
-      // Don't close popup if clicking inside the popup
-      if (popup.contains(e.target)) {
-        return;
-      }
-
-      // Close popup on any other click
-      if (popupActive) {
-        // Stop event propagation to prevent lightbox from opening
-        e.stopPropagation();
-
+      if (popup.classList.contains('active')) {
         popup.classList.remove('active');
         container.removeAttribute('data-popup-open');
-
-        // Animate zoom out smoothly
-        const img = container.querySelector('img');
-        const hotspotsOverlay = container.querySelector('[class*="absolute"][style*="left"]');
-        if (img) {
-          img.classList.remove('hotspot-zoom');
-          // Trigger reflow to ensure animation plays
-          void img.offsetHeight;
-        }
-        if (hotspotsOverlay) {
-          hotspotsOverlay.style.transform = 'scale(1)';
-          // Clear transformOrigin after animation completes
-          setTimeout(() => {
-            hotspotsOverlay.style.transformOrigin = '';
-          }, 300);
-        }
+        container.setAttribute('data-popup-just-closed', String(Date.now()));
       }
-    }, { signal: controller.signal });
+    }, { capture: true, signal: controller.signal });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         popup.classList.remove('active');
         container.removeAttribute('data-popup-open');
-
-        // Animate zoom out smoothly (Issue 2)
-        const img = container.querySelector('img');
-        const hotspotsOverlay = container.querySelector('[class*="absolute"][style*="left"]');
-        if (img) {
-          img.classList.remove('hotspot-zoom');
-          // Trigger reflow to ensure animation plays
-          void img.offsetHeight;
-        }
-        if (hotspotsOverlay) {
-          hotspotsOverlay.style.transform = 'scale(1)';
-          // Clear transformOrigin after animation completes
-          setTimeout(() => {
-            hotspotsOverlay.style.transformOrigin = '';
-          }, 300);
-        }
+        container.setAttribute('data-popup-just-closed', String(Date.now()));
       }
     }, { signal: controller.signal });
   });
@@ -251,9 +186,4 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
     inset: 38%;
   }
 
-  /* Image zoom effect */
-  [data-hotspot-image] > img.hotspot-zoom {
-    transform: scale(1.1);
-    transition: transform 0.3s ease;
-  }
 </style>

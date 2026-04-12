@@ -269,19 +269,28 @@ const isMultiple = images.length > 1;
     document.querySelectorAll('[data-glightbox]').forEach(glightboxLink => {
       glightboxLink.addEventListener('click', (e) => {
         // Find the parent hotspot container
-        const hotspotContainer = glightboxLink.closest('[data-hotspot-image]');
+        const hotspotContainer = glightboxLink.querySelector('[data-hotspot-image]');
 
-        // Prevent lightbox if popup is active
-        if (hotspotContainer && hotspotContainer.hasAttribute('data-popup-open')) {
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
+        // Prevent lightbox if popup is active or was just closed (200ms debounce)
+        if (hotspotContainer) {
+          const isOpen = hotspotContainer.hasAttribute('data-popup-open');
+          const closedAtStr = hotspotContainer.getAttribute('data-popup-just-closed');
+          const closedAt = parseInt(closedAtStr || '0', 10);
+          const recentlyClosed = closedAt > 0 && (Date.now() - closedAt < 200);
+          if (isOpen || recentlyClosed) {
+            e.preventDefault();
+            // If clicking a hotspot button, let the event continue so the button's
+            // own click handler (which calls stopPropagation in bubble phase) can fire.
+            // If clicking elsewhere, we must stopPropagation ourselves to block GLightbox.
+            if (!e.target.closest('[data-hotspot-id]')) {
+              e.stopPropagation();
+            }
+            return;
+          }
         }
 
-        // Store hotspots overlay for injection into lightbox
+        // Lightbox will open — store overlay and schedule hotspot injection
         lastHotspotOverlay = hotspotContainer?.querySelector('[class*="absolute"][style*="left"]');
-
-        // Schedule hotspot injection after lightbox renders
         setTimeout(() => {
           injectHotspotsIntoLightbox(lastHotspotOverlay);
         }, 200);
