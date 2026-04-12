@@ -263,18 +263,107 @@ const isMultiple = images.length > 1;
   function initGallery() {
     GLightbox({ selector: '[data-glightbox]' });
 
-    // Prevent lightbox from opening when a hotspot popup is active
+    let lastHotspotOverlay = null;
+
+    // Track hotspots when glightbox link is clicked
     document.querySelectorAll('[data-glightbox]').forEach(glightboxLink => {
       glightboxLink.addEventListener('click', (e) => {
         // Find the parent hotspot container
         const hotspotContainer = glightboxLink.closest('[data-hotspot-image]');
+
+        // Prevent lightbox if popup is active
         if (hotspotContainer && hotspotContainer.hasAttribute('data-popup-open')) {
           e.preventDefault();
           e.stopPropagation();
           return false;
         }
-      }, true); // Use capture phase to intercept before GLightbox
+
+        // Store hotspots overlay for injection into lightbox
+        lastHotspotOverlay = hotspotContainer?.querySelector('[class*="absolute"][style*="left"]');
+
+        // Schedule hotspot injection after lightbox renders
+        setTimeout(() => {
+          injectHotspotsIntoLightbox(lastHotspotOverlay);
+        }, 200);
+      }, true); // Use capture phase
     });
+
+    function injectHotspotsIntoLightbox(overlay) {
+      if (!overlay) return;
+
+      const glightbox = document.querySelector('.glightbox-container');
+      if (!glightbox || glightbox.style.display === 'none') return;
+
+      const activeSlide = glightbox.querySelector('.gslide');
+      if (!activeSlide || activeSlide.querySelector('[data-hotspots-lightbox]')) return;
+
+      // Clone the hotspots overlay
+      const clonedOverlay = overlay.cloneNode(true);
+      clonedOverlay.setAttribute('data-hotspots-lightbox', 'true');
+
+      // Remove popups from clone
+      clonedOverlay.querySelectorAll('[data-hotspot-popup]').forEach(popup => popup.remove());
+
+      // Append to the slide
+      const slideMedia = activeSlide.querySelector('.gslide-media') || activeSlide;
+      slideMedia.style.position = 'relative';
+      slideMedia.appendChild(clonedOverlay);
+
+      // Initialize hotspot handlers in lightbox
+      const buttons = clonedOverlay.querySelectorAll('[data-hotspot-id]');
+      buttons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const label = button.getAttribute('data-hotspot-label') || '';
+          const href = button.getAttribute('data-hotspot-href');
+          const hasPrice = button.getAttribute('data-hotspot-price') === 'true';
+
+          // Remove existing popups for this button
+          clonedOverlay.querySelectorAll('[data-lightbox-popup]').forEach(p => p.remove());
+
+          // Create popup
+          const popup = document.createElement('div');
+          popup.setAttribute('data-lightbox-popup', 'true');
+          popup.className = 'absolute bg-white/95 backdrop-blur rounded-lg shadow-xl p-4 max-w-xs pointer-events-auto';
+          popup.style.left = button.offsetLeft + 'px';
+          popup.style.top = (button.offsetTop - 100) + 'px';
+          popup.style.transform = 'translateX(-50%)';
+          popup.style.zIndex = '1000';
+
+          // Create content
+          let content;
+          if (hasPrice && href) {
+            content = document.createElement('a');
+            content.href = href;
+            content.className = 'block text-amber font-semibold hover:underline';
+            content.textContent = label;
+          } else if (href) {
+            content = document.createElement('a');
+            content.href = href;
+            content.className = 'text-amber font-semibold hover:underline';
+            content.textContent = label;
+          } else {
+            content = document.createElement('p');
+            content.className = 'text-gray-800';
+            content.textContent = label;
+          }
+
+          popup.appendChild(content);
+          clonedOverlay.appendChild(popup);
+
+          // Close on outside click
+          const closeHandler = (e) => {
+            if (!popup.contains(e.target) && !button.contains(e.target)) {
+              popup.remove();
+              document.removeEventListener('click', closeHandler);
+            }
+          };
+          document.addEventListener('click', closeHandler);
+        });
+      });
+    }
 
     // Thumbnail navigation - swap visible image and update border styles
     document.querySelectorAll('[data-gallery-container]').forEach((gallery) => {
