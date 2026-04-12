@@ -51,11 +51,11 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
         aria-label={`Hotspot: ${hotspot.label}`}
       >
         {/* Outer white border layer: fills entire button */}
-        <span style="position: absolute; inset: 0; border-radius: 9999px; border: 2px solid white;"></span>
-        {/* Middle black background layer: ~8% inset (2px of 24px button, ~83% of parent size) */}
-        <span style="position: absolute; inset: 8%; border-radius: 9999px; background-color: rgba(0, 0, 0, 0.7); transition: opacity 0.2s;"></span>
-        {/* Inner white dot layer: 24% inset at rest (~50% of parent), shrinks to 33% on hover (~33% of parent) */}
-        <span style="position: absolute; inset: 24%; border-radius: 9999px; background-color: white; transition: inset 0.2s;"></span>
+        <span class="absolute rounded-full border-2 border-white"></span>
+        {/* Middle black background layer: positioned with CSS for percentage inset */}
+        <span class="absolute rounded-full transition-opacity duration-200" style="background-color: rgba(0, 0, 0, 0.5);"></span>
+        {/* Inner white dot layer: positioned with CSS for percentage inset, shrinks on hover */}
+        <span class="absolute rounded-full bg-white transition-all duration-200"></span>
       </button>
     ))}
   </div>
@@ -237,13 +237,27 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
     outline: none;
   }
 
-  /* Hover states for the three span layers (inline styles provide base styling) */
+  /* Outer white border layer: fills entire button */
+  button[data-hotspot-id] > span:nth-child(1) {
+    inset: 0;
+  }
+
+  /* Middle black circle: 4% inset (~0.96px of 24px button, ~92% of parent size) */
+  button[data-hotspot-id] > span:nth-child(2) {
+    inset: 4%;
+  }
+
   button[data-hotspot-id]:hover > span:nth-child(2) {
     opacity: 0.9;
   }
 
+  /* Inner white dot: 28% inset at rest, shrinks to 10% on hover */
+  button[data-hotspot-id] > span:nth-child(3) {
+    inset: 28%;
+  }
+
   button[data-hotspot-id]:hover > span:nth-child(3) {
-    inset: 33%;
+    inset: 10%;
   }
 
   /* Image zoom effect */
