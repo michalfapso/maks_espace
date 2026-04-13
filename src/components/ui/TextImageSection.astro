@@ -7,11 +7,6 @@ interface Props {
 
 const { variant } = Astro.props;
 
-const variantStyles = {
-  bright: 'bg-white text-wood',
-  dark: 'bg-wood text-cream'
-};
-
 const bgColorClass = variant === 'bright' ? 'bg-white' : 'bg-wood';
 const textColorClass = variant === 'bright' ? 'text-wood' : 'text-cream';
 ---
