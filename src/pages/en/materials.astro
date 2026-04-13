@@ -2,6 +2,8 @@
 import PageLayout from '@layouts/PageLayout.astro';
 import TextImageSection from '@components/ui/TextImageSection.astro';
 import HotspotImage from '@components/ui/HotspotImage.astro';
+import ImageLayout from '@components/ui/ImageLayout.astro';
+import BalancedColumns from '@components/ui/BalancedColumns.astro';
 import { Image } from 'astro:assets';
 
 import img_description from '@/assets/galleries/materials/description.jpg';
@@ -29,6 +31,82 @@ const pathname = "/en/materials/";
         A fully bio-based, vapour-open wall construction that combines excellent
         thermal performance with healthy indoor climate and natural durability.
       </p>
+    </div>
+  </section>
+
+  <!-- Section 2: Composition & Layers (Balanced Columns) -->
+  <section class="bg-white">
+    <div class="container">
+      <h2 class="text-4xl md:text-5xl font-bold text-wood mb-6">Composition & Layer Build-up</h2>
+      <p class="text-lg leading-relaxed text-gray-700 mb-8">
+        The wall is constructed from multiple layers, each chosen for specific
+        performance characteristics. From inside to outside:
+      </p>
+
+      <BalancedColumns>
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Interior Finish – Strawboard Panel (30 mm)</h3>
+          <p class="leading-relaxed text-gray-700">
+            A rigid board made from compressed straw fibres. It provides a smooth
+            interior surface, adds thermal insulation and acts as a moisture-buffering
+            layer. Typical thermal conductivity: ~0.09 W/m·K.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Insulation – Hemp-Lime (160 mm)</h3>
+          <p class="leading-relaxed text-gray-700">
+            The main insulating layer of cast or sprayed hemp shiv and lime binder.
+            Low thermal conductivity (~0.07 W/m·K) forms a continuous layer around
+            timber studs, reducing thermal bridges. High thermal mass and moisture
+            buffering stabilise indoor temperature and humidity.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Timber Frame – Structural Studs (160 mm)</h3>
+          <p class="leading-relaxed text-gray-700">
+            Standard softwood frame carrying structural loads. Cavities between
+            studs are completely filled with hemp-lime, integrating the structure
+            into the insulation zone.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Vapour-Permeable Membrane</h3>
+          <p class="leading-relaxed text-gray-700">
+            On the cold side of the insulation, this membrane protects the wall
+            from wind and external moisture while allowing water vapour to move
+            through the assembly for drying in both directions.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Counter Battens – 25×50 mm</h3>
+          <p class="leading-relaxed text-gray-700">
+            Timber battens create a ventilated cavity between membrane and outer
+            cladding, allowing moisture evaporation and improving facade durability.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Ventilated Air Cavity (25 mm)</h3>
+          <p class="leading-relaxed text-gray-700">
+            A continuous, ventilated air space drains water and equalises pressure,
+            further protecting the wall from driving rain.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-2xl font-bold text-wood mb-3">Façade Cladding – Charred Wood (20 mm, Shou Sugi Ban)</h3>
+          <p class="leading-relaxed text-gray-700">
+            External finish of charred wood boards using the traditional Shou Sugi
+            Ban technique. The charred surface provides a deep appearance, improves
+            weather resistance and durability without synthetic coatings. Thermal
+            conductivity: ~0.13–0.15 W/m·K.
+          </p>
+        </div>
+      </BalancedColumns>
     </div>
   </section>
 
