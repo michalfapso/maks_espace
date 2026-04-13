@@ -106,16 +106,19 @@ const hasPrice = (label: string) => /€|\d+.*€/.test(label);
       if (hasPrice && href) {
         element = document.createElement('a');
         element.href = href;
-        element.className = 'block text-amber font-semibold hover:underline';
+        element.className = 'block font-semibold hover:underline';
+        element.style.color = 'inherit';
         element.textContent = label;
       } else if (href) {
         element = document.createElement('a');
         element.href = href;
-        element.className = 'text-amber font-semibold hover:underline';
+        element.className = 'font-semibold hover:underline';
+        element.style.color = 'inherit';
         element.textContent = label;
       } else {
         element = document.createElement('p');
-        element.className = 'text-gray-800';
+        element.className = '';
+        element.style.color = 'inherit';
         element.textContent = label;
       }
 

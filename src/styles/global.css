@@ -12,24 +12,24 @@
   }
 
   body {
-    @apply bg-cream text-gray-800 font-sans;
+    @apply bg-cream text-wood font-sans;
     font-feature-settings: 'kern';
   }
 
   h1 {
-    @apply text-5xl md:text-6xl font-bold text-wood mb-4;
+    @apply text-5xl md:text-6xl font-bold mb-4;
   }
 
   h2 {
-    @apply text-4xl md:text-5xl font-bold text-wood mb-3;
+    @apply text-4xl md:text-5xl font-bold mb-3;
   }
 
   h3 {
-    @apply text-2xl md:text-3xl font-bold text-wood mb-2;
+    @apply text-2xl md:text-3xl font-bold mb-2;
   }
 
   h4 {
-    @apply text-xl font-semibold text-wood mb-2;
+    @apply text-xl font-semibold mb-2;
   }
 
   p {
@@ -38,7 +38,8 @@
   }
 
   a {
-    @apply text-amber hover:underline transition-colors;
+    @apply hover:underline transition-colors;
+    color: inherit;
   }
 
   button {
@@ -99,7 +100,8 @@
   }
 
   .form-label {
-    @apply block text-sm font-semibold text-wood mb-2;
+    @apply block text-sm font-semibold mb-2;
+    color: inherit;
   }
 
   .form-group {
@@ -214,11 +216,12 @@
   }
 
   .gslide-title {
-    @apply text-wood font-semibold;
+    @apply font-semibold;
+    color: inherit;
   }
 
   .gslide-desc {
-    @apply text-gray-600;
+    color: inherit;
   }
 
   /* Mobile Menu */

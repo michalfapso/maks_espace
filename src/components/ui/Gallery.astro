@@ -219,7 +219,7 @@ const isMultiple = images.length > 1;
           {images.map((img, idx) => (
             <button
               class={`flex-shrink-0 h-24 w-24 rounded-lg overflow-hidden border-2 transition-colors cursor-pointer ${
-                idx === 0 ? 'border-amber' : 'border-wood hover:border-amber'
+                idx === 0 ? 'border-amber' : 'border-gray-400 hover:border-amber'
               }`}
               data-thumbnail={idx}
               aria-label={`View image ${idx + 1}`}
@@ -349,16 +349,19 @@ const isMultiple = images.length > 1;
           if (hasPrice && href) {
             content = document.createElement('a');
             content.href = href;
-            content.className = 'block text-amber font-semibold hover:underline';
+            content.className = 'block font-semibold hover:underline';
+            content.style.color = 'inherit';
             content.textContent = label;
           } else if (href) {
             content = document.createElement('a');
             content.href = href;
-            content.className = 'text-amber font-semibold hover:underline';
+            content.className = 'font-semibold hover:underline';
+            content.style.color = 'inherit';
             content.textContent = label;
           } else {
             content = document.createElement('p');
-            content.className = 'text-gray-800';
+            content.className = '';
+            content.style.color = 'inherit';
             content.textContent = label;
           }
 
@@ -392,7 +395,7 @@ const isMultiple = images.length > 1;
       thumbnails.forEach((thumb, index) => {
         thumb.addEventListener('click', () => {
           thumbnails.forEach((t, i) => {
-            t.classList.toggle('border-wood', i !== index);
+            t.classList.toggle('border-gray-400', i !== index);
             t.classList.toggle('border-amber', i === index);
           });
           if (mainImages) {
