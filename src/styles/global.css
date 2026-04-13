@@ -9,6 +9,14 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    @apply text-justify hyphens-auto;
+  }
+
+  /* Disable justification on mobile (narrow columns) */
+  @media (max-width: 768px) {
+    html {
+      @apply text-left hyphens-manual;
+    }
   }
 
   body {
@@ -56,6 +64,11 @@
 
 /* Container Utilities */
 @layer components {
+  /* Text Justification Escape Hatch */
+  .no-justify {
+    @apply text-left hyphens-manual;
+  }
+
   .container {
     @apply max-w-7xl mx-auto px-4 md:px-6 lg:px-8;
   }
