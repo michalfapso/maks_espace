@@ -1,0 +1,29 @@
+---
+// src/components/ui/TextImageSection.astro
+
+interface Props {
+  variant: 'bright' | 'dark';
+}
+
+const { variant } = Astro.props;
+
+const variantStyles = {
+  bright: 'bg-white text-wood',
+  dark: 'bg-wood text-cream'
+};
+
+const bgColorClass = variant === 'bright' ? 'bg-white' : 'bg-wood';
+const textColorClass = variant === 'bright' ? 'text-wood' : 'text-cream';
+---
+
+<section class={`section-padding ${bgColorClass}`}>
+  <div class="container">
+    <div class={`grid grid-cols-1 md:grid-cols-2 gap-12 items-start ${textColorClass}`}>
+      {/* Text Slot */}
+      <slot name="text" />
+
+      {/* Image Slot */}
+      <slot name="image" />
+    </div>
+  </div>
+</section>
