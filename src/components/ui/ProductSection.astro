@@ -29,7 +29,7 @@ const { name, size, price, description, reverse = false } = Astro.props;
     <slot name="cta" />
   </div>
 
-  <div slot="image" class={`${reverse ? 'md:order-first' : ''}`}>
+  <div slot="image" class={reverse ? 'md:order-first' : ''}>
     <slot name="image" />
   </div>
 </TextImageSection>
