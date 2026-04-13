@@ -3,6 +3,7 @@
 import PageLayout from '@layouts/PageLayout.astro';
 import HeroImage from '@components/ui/HeroImage.astro';
 import ProductSection from '@components/ui/ProductSection.astro';
+import TextImageSection from '@components/ui/TextImageSection.astro';
 import ContactForm from '@components/ui/ContactForm.astro';
 import Gallery from '@components/ui/Gallery.astro';
 import heroImage from '@assets/img/hero.jpg';
@@ -54,14 +55,18 @@ const pageTitle = 'HPM É-SPACE Product Portfolio';
   </ProductSection>
 
   {/* Interior Inspiration Section */}
-  <section class="section-padding bg-wood text-cream">
-    <div class="container">
-      <h2 class="text-4xl font-bold mb-8">Interior Inspiration</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Gallery would go here */}
-      </div>
+  <TextImageSection variant="dark">
+    <div slot="text">
+      <h2 class="text-4xl font-bold mb-6">Interior Inspiration</h2>
+      <p class="text-lg leading-relaxed mb-6">
+        Explore how our garden offices can be personalized and furnished to create your ideal workspace.
+        From minimalist setups to fully equipped offices, discover inspiration for your next project.
+      </p>
     </div>
-  </section>
+    <div slot="image">
+      <Gallery folder="/assets/galleries/interior" />
+    </div>
+  </TextImageSection>
 
   {/* Materials Section */}
   <section class="section-padding bg-cream">
