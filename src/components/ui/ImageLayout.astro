@@ -16,9 +16,9 @@ const getContainerClasses = () => {
 
 const getImageContainerClasses = () => {
   if (align === 'left') {
-    return 'float-left mr-4 md:mr-6';
+    return 'float-left mr-4 md:mr-6 md:float-left float-none md:w-auto w-full';
   } else if (align === 'right') {
-    return 'float-right ml-4 md:ml-6';
+    return 'float-right ml-4 md:ml-6 md:float-right float-none md:w-auto w-full';
   }
   // fullwidth: no float classes, just w-full (handled by container parent)
   return 'w-full';
@@ -35,7 +35,18 @@ const getImageContainerClasses = () => {
 </div>
 
 <style>
+  /* Mobile: Disable floats and stack */
+  @media (max-width: 767px) {
+    :global(.image-container) {
+      float: none !important;
+      width: 100%;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+  }
+
   .image-caption {
+    clear: both;
     /* Will be defined in Task 4 */
   }
 </style>
