@@ -6,12 +6,16 @@ interface Props {
 const { gap = '2rem' } = Astro.props;
 ---
 
-<div class="columns-1 md:columns-2" style={`column-gap: ${gap};`}>
+<div class="balanced-columns columns-1 md:columns-2" style={`column-gap: ${gap};`}>
   <slot />
 </div>
 
 <style>
-  div {
+  .balanced-columns {
     column-fill: balance;
+  }
+
+  :global(div > div) {
+    break-inside: avoid;
   }
 </style>
