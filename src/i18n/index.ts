@@ -20,25 +20,28 @@ export function t(lang: Lang) {
   return translations[lang] || translations.sk;
 }
 
+// Get base URL from Astro config
+const BASE_URL = import.meta.env.BASE_URL || '/';
+
 // Get language-specific URLs
 export function getProductsPath(lang: Lang): string {
-  return `/${lang}/`;
+  return `${BASE_URL}${lang}/`;
 }
 
 export function getInvestorPath(lang: Lang): string {
   const investorPaths: Record<Lang, string> = {
-    sk: '/sk/pre-investorov/',
-    en: '/en/for-investors/',
-    cs: '/cs/pro-investory/',
+    sk: `${BASE_URL}sk/pre-investorov/`,
+    en: `${BASE_URL}en/for-investors/`,
+    cs: `${BASE_URL}cs/pro-investory/`,
   };
   return investorPaths[lang];
 }
 
 export function getMaterialsPath(lang: Lang): string {
   const materialsPaths: Record<Lang, string> = {
-    sk: '/sk/materialy/',
-    en: '/en/materials/',
-    cs: '/cs/materialy/',
+    sk: `${BASE_URL}sk/materialy/`,
+    en: `${BASE_URL}en/materials/`,
+    cs: `${BASE_URL}cs/materialy/`,
   };
   return materialsPaths[lang];
 }
