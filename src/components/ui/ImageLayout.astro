@@ -1,6 +1,4 @@
 ---
-// src/components/ui/ImageLayout.astro
-
 export interface Props {
   align: 'left' | 'right' | 'fullwidth';
   maxWidth: string;
@@ -8,25 +6,38 @@ export interface Props {
 }
 
 const { align, maxWidth, caption } = Astro.props;
+
+// Generate container class based on alignment
+const getContainerClasses = () => {
+  if (align === 'fullwidth') {
+    return 'flex flex-col items-center';
+  }
+  return '';
+};
+
+// Generate image container classes based on alignment
+const getImageContainerClasses = () => {
+  const baseClasses = align === 'fullwidth' ? 'w-full' : '';
+
+  if (align === 'left') {
+    return `${baseClasses} float-left mr-4 md:mr-6`;
+  } else if (align === 'right') {
+    return `${baseClasses} float-right ml-4 md:ml-6`;
+  }
+
+  return baseClasses;
+};
 ---
 
-<div class="image-layout-wrapper">
-  <div class="image-container">
+<div class={getContainerClasses()}>
+  <div style={`max-width: ${maxWidth}`} class={getImageContainerClasses()}>
     <slot />
   </div>
   {caption && <p class="image-caption">{caption}</p>}
 </div>
 
 <style>
-  .image-layout-wrapper {
-    /* Will be defined in subsequent tasks */
-  }
-
-  .image-container {
-    /* Will be defined in subsequent tasks */
-  }
-
   .image-caption {
-    /* Will be defined in subsequent tasks */
+    /* Will be defined in Task 4 */
   }
 </style>
