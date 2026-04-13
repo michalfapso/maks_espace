@@ -16,9 +16,13 @@ const getContainerClasses = () => {
 
 const getImageContainerClasses = () => {
   if (align === 'left') {
-    return 'float-left mr-4 md:mr-6 md:float-left float-none md:w-auto w-full';
+    // Mobile-first: no float, full width, no margin
+    // Desktop (md+): float left, responsive margin, auto width
+    return 'float-none w-full md:float-left md:mr-6 md:w-auto';
   } else if (align === 'right') {
-    return 'float-right ml-4 md:ml-6 md:float-right float-none md:w-auto w-full';
+    // Mobile-first: no float, full width, no margin
+    // Desktop (md+): float right, responsive margin, auto width
+    return 'float-none w-full md:float-right md:ml-6 md:w-auto';
   }
   // fullwidth: no float classes, just w-full (handled by container parent)
   return 'w-full';
