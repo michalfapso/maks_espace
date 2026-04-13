@@ -1,0 +1,32 @@
+---
+// src/components/ui/ImageLayout.astro
+
+export interface Props {
+  align: 'left' | 'right' | 'fullwidth';
+  maxWidth: string;
+  caption?: string;
+}
+
+const { align, maxWidth, caption } = Astro.props;
+---
+
+<div class="image-layout-wrapper">
+  <div class="image-container">
+    <slot />
+  </div>
+  {caption && <p class="image-caption">{caption}</p>}
+</div>
+
+<style>
+  .image-layout-wrapper {
+    /* Will be defined in subsequent tasks */
+  }
+
+  .image-container {
+    /* Will be defined in subsequent tasks */
+  }
+
+  .image-caption {
+    /* Will be defined in subsequent tasks */
+  }
+</style>
