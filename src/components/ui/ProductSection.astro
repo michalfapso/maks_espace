@@ -1,5 +1,5 @@
 ---
-// src/components/ui/ProductSection.astro
+import TextImageSection from './TextImageSection.astro';
 
 interface Props {
   name: string;
@@ -12,30 +12,24 @@ interface Props {
 const { name, size, price, description, reverse = false } = Astro.props;
 ---
 
-<section class="section-padding bg-white">
-  <div class="container">
-    <div class={`grid grid-cols-1 md:grid-cols-2 gap-12 items-start ${reverse ? 'md:[&>:first-child]:order-2' : ''}`}>
-      {/* Image Slot */}
-      <div>
-        <slot name="image" />
-      </div>
+<TextImageSection variant="bright">
+  <div slot="text">
+    <h2 class="text-3xl font-bold text-wood mb-2">{name}</h2>
+    <p class="text-lg text-wood font-semibold mb-4">{size} • {price}</p>
 
-      {/* Text Content */}
-      <div>
-        <h2 class="text-3xl font-bold text-wood mb-2">{name}</h2>
-        <p class="text-lg text-wood font-semibold mb-4">{size} • {price}</p>
+    <ul class="space-y-3 mb-6">
+      {description.map(point => (
+        <li class="flex gap-3">
+          <span class="text-wood text-xl flex-shrink-0">•</span>
+          <span>{point}</span>
+        </li>
+      ))}
+    </ul>
 
-        <ul class="space-y-3 mb-6">
-          {description.map(point => (
-            <li class="flex gap-3">
-              <span class="text-wood text-xl flex-shrink-0">•</span>
-              <span>{point}</span>
-            </li>
-          ))}
-        </ul>
-
-        <slot name="cta" />
-      </div>
-    </div>
+    <slot name="cta" />
   </div>
-</section>
+
+  <div slot="image" class={`${reverse ? 'md:order-first' : ''}`}>
+    <slot name="image" />
+  </div>
+</TextImageSection>
