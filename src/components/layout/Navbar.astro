@@ -1,5 +1,7 @@
 ---
 // src/components/layout/Navbar.astro
+import { Image } from 'astro:assets';
+import logoImg from '@/assets/img/logo.jpg';
 import { t, LANG_META, type Lang, getProductsPath, getInvestorPath, getMaterialsPath } from '@i18n/index';
 
 interface Props {
@@ -13,16 +15,16 @@ const materialsUrl = getMaterialsPath(lang);
 const investorsUrl = getInvestorPath(lang);
 ---
 
-<nav class="bg-wood text-cream sticky top-0 z-50 shadow-lg">
+<nav class="bg-white sticky top-0 z-50 shadow-lg">
   <div class="container flex items-center justify-between py-4">
     {/* Logo */}
     <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
-      <img
-        src="/assets/img/logo.jpg"
+      <Image
+        src={logoImg}
         alt="HPM company logo"
         class="h-10 w-auto"
       />
-      <span class="hidden sm:inline text-lg font-bold">É-space</span>
+      {/* <span class="hidden sm:inline text-lg font-bold">É-space</span> */}
     </a>
 
     {/* Desktop Menu */}

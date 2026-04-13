@@ -69,7 +69,7 @@ const pageTitle = 'HPM É-SPACE Product Portfolio';
   </TextImageSection>
 
   {/* Materials Section */}
-  <TextImageSection variant="bright">
+  <TextImageSection variant="bright" reverse={true}>
     <div slot="text">
       <h2 class="text-4xl font-bold mb-6">Materials</h2>
       <p class="text-lg leading-relaxed text-gray-600 mb-6">
@@ -102,10 +102,8 @@ const pageTitle = 'HPM É-SPACE Product Portfolio';
       </a>
     </div>
     <div slot="image">
-      <img
-        src="/assets/galleries/materials/material.jpg"
-        alt="Bio-based wall system overview"
-        class="w-full rounded-lg"
+      <Gallery
+        folder="/assets/galleries/materials"
       />
     </div>
   </TextImageSection>

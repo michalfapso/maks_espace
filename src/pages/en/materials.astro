@@ -1,11 +1,17 @@
 ---
 import PageLayout from '@layouts/PageLayout.astro';
+import TextImageSection from '@components/ui/TextImageSection.astro';
+import HotspotImage from '@components/ui/HotspotImage.astro';
+import { Image } from 'astro:assets';
+
+import img_description from '@/assets/galleries/materials/description.jpg';
 
 const title = "Materials";
 const description = "Bio-based wall system technology and specifications";
 const seoKeywords = ["bio-based walls", "hemp-lime", "sustainable building", "thermal performance"];
 const lang = "en";
 const pathname = "/en/materials/";
+
 ---
 
 <PageLayout
@@ -23,17 +29,18 @@ const pathname = "/en/materials/";
         A fully bio-based, vapour-open wall construction that combines excellent
         thermal performance with healthy indoor climate and natural durability.
       </p>
-      <img
-        src="/assets/galleries/materials/material.jpg"
-        alt="Bio-based wall system overview"
-        class="w-full rounded-lg mb-8"
-      />
     </div>
   </section>
 
   <!-- Section 2: Composition & Layers -->
-  <section id="layers" class="section-padding bg-cream">
-    <div class="container">
+  <TextImageSection variant="bright" reverse={true}>
+    <div slot="image">
+      <Image
+        src={img_description}
+        alt="Wall system cross-section showing all layers"
+      />
+    </div>
+    <div slot="text">
       <h2 class="text-4xl md:text-5xl font-bold text-wood mb-6">Composition & Layer Build-up</h2>
       <p class="text-lg leading-relaxed text-gray-700 mb-8">
         The wall is constructed from multiple layers, each chosen for specific
@@ -105,13 +112,8 @@ const pathname = "/en/materials/";
         </div>
       </div>
 
-      <img
-        src="/assets/galleries/materials/material.jpg"
-        alt="Wall system cross-section showing all layers"
-        class="w-full rounded-lg mb-8"
-      />
     </div>
-  </section>
+  </TextImageSection>
 
   <!-- Section 3: Thermal Performance -->
   <section id="performance" class="section-padding bg-white">
