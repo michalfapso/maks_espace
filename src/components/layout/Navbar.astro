@@ -18,7 +18,7 @@ const investorsUrl = getInvestorPath(lang);
 <nav class="bg-white sticky top-0 z-50 shadow-lg">
   <div class="container flex items-center justify-between py-4">
     {/* Logo */}
-    <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+    <a href={`${import.meta.env.BASE_URL}`} class="flex items-center gap-2 hover:opacity-80 transition-opacity">
       <Image
         src={logoImg}
         alt="HPM company logo"
