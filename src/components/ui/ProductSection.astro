@@ -12,7 +12,7 @@ interface Props {
 const { name, size, price, description, reverse = false } = Astro.props;
 ---
 
-<TextImageSection variant="bright">
+<TextImageSection variant="bright" reverse={reverse}>
   <div slot="text">
     <h2 class="text-3xl font-bold text-wood mb-2">{name}</h2>
     <p class="text-lg text-wood font-semibold mb-4">{size} • {price}</p>
@@ -29,7 +29,7 @@ const { name, size, price, description, reverse = false } = Astro.props;
     <slot name="cta" />
   </div>
 
-  <div slot="image" class={reverse ? 'md:order-first' : ''}>
+  <div slot="image">
     <slot name="image" />
   </div>
 </TextImageSection>

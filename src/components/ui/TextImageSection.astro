@@ -16,10 +16,14 @@ const textColorClass = variant === 'bright' ? 'text-wood' : 'text-cream';
   <div class="container">
     <div class={`grid grid-cols-1 md:grid-cols-2 gap-12 items-start ${textColorClass}`}>
       {/* Text Slot */}
-      <slot name="text" class={reverse ? 'md:order-last' : ''} />
+      <div class={reverse ? 'md:order-last' : ''}>
+        <slot name="text" />
+      </div>
 
       {/* Image Slot */}
-      <slot name="image" />
+      <div>
+        <slot name="image" />
+      </div>
     </div>
   </div>
 </section>
