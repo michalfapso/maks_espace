@@ -1,13 +1,12 @@
 ---
 export interface Props {
   align: 'left' | 'right' | 'fullwidth';
-  maxWidth: string;
+  maxWidth: string; // Should be a valid CSS value, e.g., "50%", "33%", "25%"
   caption?: string;
 }
 
 const { align, maxWidth, caption } = Astro.props;
 
-// Generate container class based on alignment
 const getContainerClasses = () => {
   if (align === 'fullwidth') {
     return 'flex flex-col items-center';
@@ -15,21 +14,20 @@ const getContainerClasses = () => {
   return '';
 };
 
-// Generate image container classes based on alignment
 const getImageContainerClasses = () => {
-  const baseClasses = align === 'fullwidth' ? 'w-full' : '';
-
   if (align === 'left') {
-    return `${baseClasses} float-left mr-4 md:mr-6`;
+    return 'float-left mr-4 md:mr-6';
   } else if (align === 'right') {
-    return `${baseClasses} float-right ml-4 md:ml-6`;
+    return 'float-right ml-4 md:ml-6';
   }
-
-  return baseClasses;
+  // fullwidth: no float classes, just w-full (handled by container parent)
+  return 'w-full';
 };
 ---
 
 <div class={getContainerClasses()}>
+  {/* maxWidth uses inline style because Tailwind lacks arbitrary percentage classes.
+      maxWidth should be a valid CSS value like "50%", "33%", "25%" */}
   <div style={`max-width: ${maxWidth}`} class={getImageContainerClasses()}>
     <slot />
   </div>
