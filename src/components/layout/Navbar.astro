@@ -1,8 +1,8 @@
 ---
 // src/components/layout/Navbar.astro
 import { Image } from 'astro:assets';
-import logoImg from '@/assets/img/logo.jpg';
-import { t, LANG_META, type Lang, getProductsPath, getInvestorPath, getMaterialsPath } from '@i18n/index';
+import logoImg from '@/assets/img/logo_horizontal.png';
+import { t, LANG_META, type Lang, getProductsPath, getInvestorPath, getMaterialsPath, getAboutPath, getLangURL } from '@i18n/index';
 
 interface Props {
   lang: Lang;
@@ -13,6 +13,7 @@ const i18n = t(lang);
 const productsUrl = getProductsPath(lang);
 const materialsUrl = getMaterialsPath(lang);
 const investorsUrl = getInvestorPath(lang);
+const aboutUrl = getAboutPath(lang);
 ---
 
 <nav class="bg-white sticky top-0 z-50 shadow-lg">
@@ -38,6 +39,11 @@ const investorsUrl = getInvestorPath(lang);
       <a href={investorsUrl} class="hover:text-amber transition-colors">
         {i18n.nav.investors}
       </a>
+      {i18n.nav.about && (
+        <a href={aboutUrl} class="hover:text-amber transition-colors">
+          {i18n.nav.about}
+        </a>
+      )}
     </div>
 
     {/* Language Selector + Mobile Menu Button */}
@@ -46,7 +52,7 @@ const investorsUrl = getInvestorPath(lang);
       <div class="hidden md:flex gap-2">
         {Object.entries(LANG_META).map(([langCode, meta]) => (
           <a
-            href={getProductsPath(langCode as Lang)}
+            href={getLangURL(Astro.url.pathname, langCode as Lang)}
             class={`text-lg ${langCode === lang ? 'text-amber font-bold' : 'hover:text-amber transition-colors'}`}
             title={meta.label}
           >
@@ -91,6 +97,15 @@ const investorsUrl = getInvestorPath(lang);
         >
           {i18n.nav.investors}
         </a>
+        {i18n.nav.about && (
+          <a
+            href={aboutUrl}
+            class="text-lg font-semibold hover:text-amber transition-colors"
+            data-mobile-menu-close
+          >
+            {i18n.nav.about}
+          </a>
+        )}
 
         {/* Mobile Language Selector */}
         <div class="border-t border-wood pt-6">
@@ -98,7 +113,7 @@ const investorsUrl = getInvestorPath(lang);
           <div class="flex gap-3">
             {Object.entries(LANG_META).map(([langCode, meta]) => (
               <a
-                href={getProductsPath(langCode as Lang)}
+                href={getLangURL(Astro.url.pathname, langCode as Lang)}
                 class={`flex flex-col items-center gap-1 p-2 rounded ${
                   langCode === lang
                     ? 'bg-amber text-wood'

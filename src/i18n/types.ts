@@ -4,6 +4,7 @@ export interface TranslationSet {
     products: string;
     materials: string;
     investors: string;
+    about: string;
     selectLanguage?: string;
   };
   footer: {

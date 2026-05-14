@@ -1,0 +1,53 @@
+---
+// src/pages/en/about.astro
+import PageLayout from '@layouts/PageLayout.astro';
+import { Image } from 'astro:assets';
+import maksPhoto from '@/assets/img/maks_profile_photo.jpg';
+---
+
+<PageLayout
+  title="About Us — HPM É-space"
+  description="Learn about the mission and vision of HPM É-space and our founder Maksym Fedorchenko."
+  lang="en"
+  pathname="/en/about/"
+>
+  {/* Two-column: Photo + Mission & Vision */}
+  <section class="section-padding bg-cream">
+    <div class="container max-w-5xl">
+      <div class="grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-12 items-start">
+
+        {/* Left: Founder photo + caption */}
+        <div>
+          <Image
+            src={maksPhoto}
+            alt="Maksym Fedorchenko, Founder & CEO of HPM É-space"
+            class="rounded-lg w-full"
+          />
+          <p class="text-center font-bold text-wood mt-4 mb-2">Maksym Fedorchenko</p>
+          <p class="text-center text-sm text-gray-500">Founder &amp; CEO</p>
+        </div>
+
+        {/* Right: Mission then Vision */}
+        <div>
+          <h2 class="text-3xl font-bold text-wood mb-4">Mission</h2>
+          <p class="text-gray-600">
+            At É-space we are reshaping the future of construction by delivering fast-assembly,
+            highly ecological buildings with superior environmental and physical performance.
+            Inspired by technological progress that makes high-quality construction faster and
+            more affordable, we create sustainable living spaces for generations to come.
+          </p>
+
+          <h2 class="text-3xl font-bold text-wood mb-4 mt-8">Our Vision</h2>
+          <p class="text-gray-600">
+            To transform the construction industry by delivering fast-assembly ecological
+            buildings that set new global standards in sustainability, comfort, and
+            affordability. Driven by technological innovation, we strive to make premium
+            green housing accessible to millions of people worldwide, proving that the best
+            buildings can be built faster, cleaner, and cheaper.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</PageLayout>

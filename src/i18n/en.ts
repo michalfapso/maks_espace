@@ -6,6 +6,7 @@ const en = {
     products: 'Products',
     materials: 'Materials',
     investors: 'For Investors',
+    about: 'About Us',
     selectLanguage: 'Select Language',
   },
   footer: {

@@ -1,0 +1,62 @@
+---
+// src/pages/cs/o-nas.astro
+import PageLayout from '@layouts/PageLayout.astro';
+import { Image } from 'astro:assets';
+import maksPhoto from '@/assets/img/maks_profile_photo.jpg';
+---
+
+<PageLayout
+  title="O nás — HPM É-space"
+  description="Poznejte misi a vizi HPM É-space a našeho zakladatele Maksyma Fedorchenka."
+  lang="cs"
+  pathname="/cs/o-nas/"
+>
+  {/* Page Header */}
+  <section class="section-padding">
+    <div class="container max-w-3xl">
+      <h1 class="text-4xl font-bold text-wood mb-4">O nás</h1>
+      <p class="text-lg text-gray-600">Budujeme budoucnost ekologické výstavby.</p>
+    </div>
+  </section>
+
+  {/* Two-column: Photo + Mission & Vision */}
+  <section class="section-padding bg-cream">
+    <div class="container max-w-5xl">
+      <div class="grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-12 items-start">
+
+        {/* Left: Founder photo + caption */}
+        <div>
+          <Image
+            src={maksPhoto}
+            alt="Maksym Fedorchenko, zakladatel a CEO HPM É-space"
+            class="rounded-lg w-full"
+          />
+          <p class="font-bold text-wood mt-4">Maksym Fedorchenko</p>
+          <p class="text-sm text-gray-500">Zakladatel & CEO</p>
+        </div>
+
+        {/* Right: Mission then Vision */}
+        <div>
+          <h2 class="text-3xl font-bold text-wood mb-4">Mise</h2>
+          <p class="text-gray-600">
+            V É-space přetváříme budoucnost stavebnictví tím, že dodáváme rychle
+            montovatelné, vysoce ekologické budovy s vynikajícími environmentálními
+            a fyzikálními vlastnostmi. Inspirováni technologickým pokrokem, který dělá
+            kvalitní výstavbu rychlejší a dostupnější, vytváříme udržitelné životní
+            prostory pro příští generace.
+          </p>
+
+          <h2 class="text-3xl font-bold text-wood mb-4 mt-8">Naše vize</h2>
+          <p class="text-gray-600">
+            Transformovat stavební průmysl dodávkou rychle montovatelných ekologických
+            budov, které nastavují nové globální standardy v oblasti udržitelnosti,
+            pohodlí a dostupnosti. Poháněni technologickými inovacemi usilujeme o to,
+            aby prémiové zelené bydlení bylo dostupné milionům lidí po celém světě,
+            a dokazujeme, že nejlepší budovy lze stavět rychleji, čistěji a levněji.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</PageLayout>

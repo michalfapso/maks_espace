@@ -6,6 +6,7 @@ const sk = {
     products: 'Produkty',
     materials: 'Materiály',
     investors: 'Pre Investorov',
+    about: 'O nás',
     selectLanguage: 'Vyber jazyk',
   },
   footer: {

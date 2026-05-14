@@ -1,14 +1,17 @@
 ---
 // src/components/ui/LanguageSelector.astro
+import { Image } from 'astro:assets';
+import logoImg from '@/assets/img/logo_transparent_bg.png';
 import { LANG_META } from '@i18n/index';
 
 const langs = Object.entries(LANG_META);
 ---
 
-<div class="flex flex-col items-center justify-center min-h-screen bg-cream gap-12 px-4">
+<div class="flex flex-col items-center justify-center mt-12 md:mt-24 bg-cream gap-12 px-4">
   <div class="text-center">
+    <Image src={logoImg} alt="HPM É-space logo" class="mx-auto mb-16 h-48 sm:h-64 w-auto" />
     <h1 class="text-5xl md:text-6xl font-bold text-wood mb-4">É-space Garden Houses</h1>
-    <p class="text-lg text-gray-600 mb-8">Prefabrikované záhradné kancelárie z ekologických materiálov</p>
+    <p class="text-lg text-gray-600 mb-8">Prefabricated eco garden offices from natural materials</p>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl w-full">
